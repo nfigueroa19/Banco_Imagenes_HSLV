@@ -1,0 +1,14 @@
+# Herramientas de desarrollo (Claude Code) - no hace falta para desplegar el aplicativo
+.claude/
+
+# Variables de entorno y secretos locales
+.env
+.env.local
+
+# Supabase CLI (desarrollo local)
+supabase/.branches
+supabase/.temp
+
+# Sistema operativo / editor
+.DS_Store
+Thumbs.db
