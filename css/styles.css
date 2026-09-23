@@ -1,34 +1,72 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  /* Paleta institucional HSLV, extraída del isotipo real (Assets/Logo/hslv-mark.png) */
-  --azul:#294F9A;--azul-med:#22417E;--azul-claro:#DFE5F0;
-  --verde:#008E50;--verde-claro:#E0F1EA;
-  --lima:#9ABC43;--lima-claro:#F0F5E3;
+  /* Paleta institucional HSLV — valores oficiales de Logos/Manual_de_Marca_Web.pdf (pág. 9):
+     azul Pantone 2758C, verde Pantone 364C, lima Pantone 368C. Actualizada 2026-09-22 desde la
+     paleta anterior (extraída por muestreo de píxeles, que no coincidía con el Pantone real). */
+  --azul:#13235B;--azul-med:#101D4B;--azul-claro:#DCDEE7;
+  --verde:#2B722A;--verde-claro:#E5EEE5;
+  --lima:#7AB51D;--lima-claro:#EBF4DD;
   --bg:#F4F6F9;--card:#ffffff;--text:#1a1a2e;--muted:#6B7280;
-  --border:#E5E7EB;--border-hover:#22417E;
+  --border:#E5E7EB;--border-hover:#101D4B;
+
+  /* Acentos de categoría (tarjetas de carpeta) — mismo criterio de detección por palabras
+     clave (CAT_KW) que ya clasifica imágenes, aplicado a la tarjeta para diferenciarlas de un
+     vistazo. rse y gestion reusan azul/verde institucionales; los otros 6 son tintes nuevos
+     derivados en la misma proporción que --azul-claro/--verde-claro (≈88% blanco), documentados
+     en DESIGN_TOKENS.md — no se tocan los colores de marca del header/sidebar/botones. */
+  --cat-talento:#6B4E9B;--cat-talento-bg:#EDEAF3;
+  --cat-servicios:#1B7A8C;--cat-servicios-bg:#E4EFF1;
+  --cat-infra:#52606D;--cat-infra-bg:#EAECED;
+  --cat-eventos:#9C6B1F;--cat-eventos-bg:#F3EDE4;
+  --cat-comunidad:#B85C38;--cat-comunidad-bg:#F6EBE7;
+  --cat-rse:var(--verde);--cat-rse-bg:var(--verde-claro);
+  --cat-gestion:var(--azul);--cat-gestion-bg:var(--azul-claro);
+  --cat-especial:#8B3A62;--cat-especial-bg:#F1E7EC;
+
+  /* Acentos de ÍCONO específico (tarjetas de carpeta con ICON_RULES en js/app.js) — un color
+     propio por ícono concreto, no solo por categoría amplia, para que "Pediatría" y "Laboratorio"
+     (ambas Servicios Asistenciales) se vean distintas entre sí y no solo distintas de otras
+     categorías. Se usa SOLO cuando la carpeta matchea un ICON_RULE; si no, cae al --cat-* de su
+     categoría (arriba). Misma proporción de mezcla ~88% blanco para el fondo. Documentado en
+     DESIGN_TOKENS.md — igual que --cat-*, no se usan fuera de .folder-card. */
+  --ic-camera:#8C6239;--ic-camera-bg:#F1ECE7;
+  --ic-baby:#C15B84;--ic-baby-bg:#F8EBF0;
+  --ic-syringe:#2E7D9C;--ic-syringe-bg:#E6EFF3;
+  --ic-microscope:#5B8C3E;--ic-microscope-bg:#EBF1E8;
+  --ic-scan:#4059A6;--ic-scan-bg:#E8EBF4;
+  --ic-scissors:#6B7A45;--ic-scissors-bg:#EDEFE9;
+  --ic-heartPulse:#C25D5D;--ic-heartPulse-bg:#F8ECEC;
+  --ic-graduationCap:#3D5A80;--ic-graduationCap-bg:#E8EBF0;
+  --ic-gift:#A69A2E;--ic-gift-bg:#F4F3E6;
+  --ic-flag:#4C7A9C;--ic-flag-bg:#EAEFF3;
+  --ic-megaphone:#A6752E;--ic-megaphone-bg:#F4EEE6;
+  --ic-shield:#3C6B6B;--ic-shield-bg:#E8EDED;
+  --ic-receipt:#7A6B3C;--ic-receipt-bg:#EFEDE8;
+  --ic-siren:#A6453C;--ic-siren-bg:#F4E9E8;
+  --ic-ear:#6C8CA6;--ic-ear-bg:#EDF1F4;
 }
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* ── PANTALLA DE ACCESO ────────────────────────────────
-   Deliberadamente neutra: sin logo, sin colores institucionales,
-   sin nombre del hospital. Nadie sin sesión debe poder ver de
-   qué proyecto se trata. */
-.auth-gate{position:fixed;inset:0;background:#EDEEF1;display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
-.auth-card{background:#fff;border:1px solid #DADCE0;border-radius:12px;padding:36px 32px;max-width:340px;width:100%;text-align:center;box-shadow:0 2px 14px rgba(0,0,0,.08)}
-.auth-title{font-size:16px;font-weight:600;color:#202124;margin-bottom:6px}
-.auth-desc{font-size:13px;color:#5F6368;margin-bottom:22px;line-height:1.4}
-.auth-google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid #DADCE0;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:500;color:#3C4043;cursor:pointer;transition:box-shadow .15s,border-color .15s}
-.auth-google-btn:hover{box-shadow:0 1px 4px rgba(0,0,0,.15);border-color:#C6C9CC}
-
 /* ── HEADER ─────────────────────────────────────────── */
-.header{background:var(--azul);padding:11px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(41,79,154,.3)}
+.header{background:var(--azul);padding:11px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(19,35,91,.3)}
 .header-logo{width:38px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .header-logo img{width:100%;height:100%;object-fit:contain}
 .header-title{color:#fff;font-size:15px;font-weight:600;line-height:1.2}
 .header-sub{color:rgba(255,255,255,.75);font-size:11px}
 .hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.drive-badge{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:11px;padding:5px 10px;border-radius:6px;display:flex;align-items:center;gap:5px}
-.drive-badge.ok{border-color:rgba(154,188,67,.55);background:rgba(154,188,67,.16)}
+.drive-badge{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:11px;padding:5px 10px;border-radius:6px;display:flex;align-items:center;gap:5px;transition:background-color .2s ease,border-color .2s ease}
+.drive-badge.ok{border-color:rgba(122,181,29,.55);background:rgba(122,181,29,.16);animation:badge-in .3s cubic-bezier(.16,1,.3,1)}
+.drive-badge.ok .dot{animation:dot-ping .5s cubic-bezier(.16,1,.3,1)}
+.logout-badge{background:#C0392B;border:1px solid #C0392B;color:#fff;font-size:11px;font-weight:600;padding:6px 12px;border-radius:6px;display:flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;transition:background-color .16s ease,transform .12s cubic-bezier(.34,1.56,.64,1)}
+.logout-badge:hover{background:#A5311F}
+.logout-badge:active{transform:scale(.96)}
+/* Botón de header neutro (no destructivo, a diferencia de .logout-badge) — mismo look que
+   .drive-badge pero clickeable, para "Administrar usuarios" (ver btnUserAdmin). */
+.hdr-btn{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:11px;font-weight:600;padding:6px 12px;border-radius:6px;display:flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;transition:background-color .16s ease,transform .12s cubic-bezier(.34,1.56,.64,1)}
+.hdr-btn:hover{background:rgba(255,255,255,.22)}
+.hdr-btn:active{transform:scale(.96)}
+@keyframes badge-in{0%{opacity:.4;transform:scale(.94)}100%{opacity:1;transform:scale(1)}}
+@keyframes dot-ping{0%{box-shadow:0 0 0 0 rgba(122,181,29,.55)}100%{box-shadow:0 0 0 6px rgba(122,181,29,0)}}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--lima);display:inline-block}
 
 /* ── SEARCH BAR ─────────────────────────────────────── */
@@ -36,7 +74,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .search-wrap{flex:1;min-width:200px;position:relative}
 .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--muted);fill:none}
 .search-wrap input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);outline:none;transition:border-color .15s}
-.search-wrap input:focus{border-color:var(--azul-med);box-shadow:0 0 0 3px rgba(0,90,158,.1)}
+.search-wrap input:focus{border-color:var(--azul-med);box-shadow:0 0 0 3px rgba(19,35,91,.1)}
 .hdr-actions{display:flex;gap:8px}
 .btn-connect{background:var(--azul);color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px}
 .btn-connect svg{width:15px;height:15px;stroke:#fff;fill:none}
@@ -59,7 +97,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 
 /* ── MAIN ────────────────────────────────────────────── */
 .main{flex:1;padding:16px;overflow-y:auto}
-.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
 .stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 10px;text-align:center}
 .stat-num{font-size:18px;font-weight:700;color:var(--azul)}
 .stat-lbl{font-size:9px;color:var(--muted);margin-top:1px;text-transform:uppercase;letter-spacing:.04em}
@@ -74,17 +112,55 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .vbtn.active{background:var(--azul);border-color:var(--azul);color:#fff}
 .vbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;display:block}
 
+/* Barra flotante de selección múltiple — aparece al marcar al menos una imagen (ver
+   renderSelectionBar en app.js). Fondo oscuro a propósito para distinguirla del resto de la UI
+   (clara) como una capa de acción temporal, no un panel permanente. */
+.selection-bar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:12px;background:var(--text);color:#fff;padding:10px 12px 10px 16px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.25);font-size:12px}
+.selection-bar .sb-count{font-weight:600;white-space:nowrap}
+.selection-bar .btn-sec{background:none;border:1px solid rgba(255,255,255,.35);color:#fff}
+.selection-bar .btn-sec:hover{background:rgba(255,255,255,.14)}
+.selection-bar .btn-pri:disabled,.selection-bar .btn-sec:disabled{opacity:.6;cursor:default;transform:none}
+
+/* MODAL "Administrar usuarios" (ver openUserAdmin/renderUserAdminList en js/app.js) */
+.ua-list{margin-bottom:16px;display:flex;flex-direction:column;gap:6px}
+.ua-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px}
+.ua-row .ua-email{flex:1;min-width:0;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ua-row select{font-size:11px;padding:4px 6px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);outline:none}
+.ua-row select:focus{border-color:var(--azul-med)}
+.ua-reset{background:var(--bg);border:none;color:var(--muted);width:24px;height:24px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background-color .14s ease,color .14s ease}
+.ua-reset:hover{background:var(--azul-claro);color:var(--azul)}
+.ua-reset svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+.ua-del{background:#FEF2F2;border:none;color:#991B1B;width:24px;height:24px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background-color .14s ease,color .14s ease}
+.ua-del:hover{background:#991B1B;color:#fff}
+.ua-del svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+.ua-empty{font-size:12px;color:var(--muted);padding:6px 2px}
+.ua-new{border-top:1px solid var(--border);padding-top:14px}
+
 /* ── GRID / CARDS ─────────────────────────────────────── */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
 .grid.lv{grid-template-columns:1fr}
-.img-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .14s,box-shadow .14s}
-.img-card:hover{border-color:var(--azul-med);box-shadow:0 2px 12px rgba(41,79,154,.12)}
+.img-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .14s,box-shadow .14s;position:relative}
+.img-card:hover{border-color:var(--azul-med);box-shadow:0 2px 12px rgba(19,35,91,.12)}
+.img-card.selected{border-color:var(--azul);box-shadow:0 0 0 2px var(--azul-claro)}
+/* Checkbox de selección — oculto hasta hover para no ensuciar la grilla, salvo que ya esté
+   marcado (así una tarjeta seleccionada sigue visible al alejar el mouse). */
+.sel-chk{position:absolute;top:6px;left:6px;z-index:2;width:20px;height:20px;padding:0;border-radius:5px;border:1.5px solid #fff;background:rgba(20,20,30,.32);cursor:pointer;opacity:0;transition:opacity .12s,background-color .12s,border-color .12s;display:flex;align-items:center;justify-content:center}
+.img-card:hover .sel-chk,.sel-chk.checked{opacity:1}
+.sel-chk.checked{background:var(--azul);border-color:var(--azul)}
+.sel-chk svg{width:12px;height:12px;stroke:#fff;stroke-width:3;fill:none;display:none}
+.sel-chk.checked svg{display:block}
+.img-card.li .sel-chk{top:auto;left:auto;position:static;margin-right:2px}
 .img-thumb{width:100%;aspect-ratio:4/3;position:relative;overflow:hidden;background:var(--bg);display:flex;align-items:center;justify-content:center}
+/* Parpadeo de "cargando" — se quita (.thumb-done, ver markThumbDone en app.js) apenas la
+   miniatura llega o se confirma que no va a llegar (fallback/error), para no pulsar para siempre. */
+.img-thumb:not(.thumb-done){animation:thumb-pulse 1.3s ease-in-out infinite}
+@keyframes thumb-pulse{0%,100%{background:var(--bg)}50%{background:var(--border)}}
+@media(prefers-reduced-motion:reduce){.img-thumb:not(.thumb-done){animation:none}}
 .img-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .img-thumb .ph{width:30px;height:30px;opacity:.22;color:var(--azul)}
 .img-thumb .ph svg{width:100%;height:100%;stroke:currentColor;stroke-width:1.5;fill:none}
-.lazy-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s}
-.lazy-img.loaded{opacity:1}
+.lazy-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity .35s cubic-bezier(.16,1,.3,1),transform .35s cubic-bezier(.16,1,.3,1)}
+.lazy-img.loaded{opacity:1;transform:scale(1)}
 .breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:12px;margin-bottom:10px;min-height:22px}
 .breadcrumb .back-btn{display:inline-flex;align-items:center;gap:4px;padding:3px 8px 3px 5px;border-radius:6px;color:var(--azul);font-weight:600;cursor:pointer;margin-right:6px;border:1px solid var(--border)}
 .breadcrumb .back-btn:hover{background:var(--azul-claro)}
@@ -95,33 +171,84 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .breadcrumb .crumb.current:hover{background:none;text-decoration:none}
 .breadcrumb .sep{opacity:.4;color:var(--muted)}
 
-.folder-list{border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
-.folder-list:empty{display:none;border:none;margin-bottom:0}
-.folder-row{display:grid;grid-template-columns:1fr 200px 160px;align-items:center;gap:8px;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border);font-size:12px;color:var(--text);cursor:pointer;transition:background .12s}
-.folder-row:last-child{border-bottom:none}
-.folder-row:hover{background:var(--azul-claro)}
-.folder-row.folder-head{background:var(--bg);cursor:default;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding-top:7px;padding-bottom:7px}
-.folder-row.folder-head:hover{background:var(--bg)}
-.fc-name{display:flex;align-items:center;gap:8px;min-width:0}
-.fc-name svg{width:16px;height:16px;color:var(--azul);flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2}
-.fc-name-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-.folder-head .fc-name{font-weight:600}
-.fc-owner,.fc-date{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.folder-list{margin-bottom:14px}
+.folder-list:empty{display:none;margin-bottom:0}
+.folder-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.folder-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;cursor:pointer;transition:border-color .18s cubic-bezier(.16,1,.3,1),box-shadow .18s cubic-bezier(.16,1,.3,1),transform .18s cubic-bezier(.34,1.56,.64,1)}
+.folder-card:hover{border-color:var(--azul-med);box-shadow:0 6px 18px -6px rgba(19,35,91,.28);transform:translateY(-2px)}
+.folder-card:active{transform:translateY(0) scale(.98);transition-duration:.08s}
+.folder-card:focus-visible{outline:2px solid var(--azul);outline-offset:2px}
+.folder-card-icon{width:30px;height:30px;color:var(--azul);flex-shrink:0}
+.folder-card-icon svg{width:100%;height:100%;stroke:currentColor;stroke-width:1.5;fill:none}
+.folder-card-name{font-size:11px;font-weight:600;color:var(--text);width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.folder-card-meta{font-size:9px;color:var(--muted);width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.folder-card-owner{display:none}
+.folder-grid.lv{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.folder-list-head{display:grid;grid-template-columns:1fr 130px 170px;gap:12px;padding:7px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);background:var(--bg);border-bottom:1px solid var(--border)}
+.folder-card.li{display:grid;grid-template-columns:1fr 130px 170px;align-items:center;gap:12px;text-align:left;padding:9px 12px;border-radius:0;border:none;border-bottom:1px solid var(--border)}
+.folder-card.li:hover{transform:none;box-shadow:inset 2px 0 0 var(--azul-med);background:var(--bg)}
+.folder-grid.lv .folder-card.li:last-child{border-bottom:none}
+.folder-card-namecell{display:flex;align-items:center;gap:10px;min-width:0}
+.folder-card.li .folder-card-icon{width:18px;height:18px;flex-shrink:0}
+.folder-card.li .folder-card-name{width:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.folder-card.li .folder-card-meta,.folder-card.li .folder-card-owner{display:block;width:auto;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (max-width:600px){
-  .folder-row{grid-template-columns:1fr;gap:2px;padding:9px 12px}
-  .fc-owner,.fc-date{font-size:10px}
-  .folder-row.folder-head{display:none}
+  .folder-list-head span:last-child,.folder-card.li .folder-card-owner{display:none}
+  .folder-list-head,.folder-card.li{grid-template-columns:1fr 100px}
 }
-.overlay{position:absolute;inset:0;background:rgba(41,79,154,.78);display:flex;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity .13s}
-.img-card:hover .overlay{opacity:1}
-.ov-btn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;width:31px;height:31px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.ov-btn svg{width:15px;height:15px;stroke:#fff;fill:none}
+.folder-card.cat-talento{background:var(--cat-talento-bg)}.folder-card.cat-talento .folder-card-icon{color:var(--cat-talento)}.folder-card.cat-talento:hover{border-color:var(--cat-talento)}
+.folder-card.cat-servicios{background:var(--cat-servicios-bg)}.folder-card.cat-servicios .folder-card-icon{color:var(--cat-servicios)}.folder-card.cat-servicios:hover{border-color:var(--cat-servicios)}
+.folder-card.cat-infra{background:var(--cat-infra-bg)}.folder-card.cat-infra .folder-card-icon{color:var(--cat-infra)}.folder-card.cat-infra:hover{border-color:var(--cat-infra)}
+.folder-card.cat-eventos{background:var(--cat-eventos-bg)}.folder-card.cat-eventos .folder-card-icon{color:var(--cat-eventos)}.folder-card.cat-eventos:hover{border-color:var(--cat-eventos)}
+.folder-card.cat-comunidad{background:var(--cat-comunidad-bg)}.folder-card.cat-comunidad .folder-card-icon{color:var(--cat-comunidad)}.folder-card.cat-comunidad:hover{border-color:var(--cat-comunidad)}
+.folder-card.cat-rse{background:var(--cat-rse-bg)}.folder-card.cat-rse .folder-card-icon{color:var(--cat-rse)}.folder-card.cat-rse:hover{border-color:var(--cat-rse)}
+.folder-card.cat-gestion{background:var(--cat-gestion-bg)}.folder-card.cat-gestion .folder-card-icon{color:var(--cat-gestion)}.folder-card.cat-gestion:hover{border-color:var(--cat-gestion)}
+.folder-card.cat-especial{background:var(--cat-especial-bg)}.folder-card.cat-especial .folder-card-icon{color:var(--cat-especial)}.folder-card.cat-especial:hover{border-color:var(--cat-especial)}
+.folder-card.icon-camera{background:var(--ic-camera-bg)}.folder-card.icon-camera .folder-card-icon{color:var(--ic-camera)}.folder-card.icon-camera:hover{border-color:var(--ic-camera)}
+.folder-card.icon-baby{background:var(--ic-baby-bg)}.folder-card.icon-baby .folder-card-icon{color:var(--ic-baby)}.folder-card.icon-baby:hover{border-color:var(--ic-baby)}
+.folder-card.icon-syringe{background:var(--ic-syringe-bg)}.folder-card.icon-syringe .folder-card-icon{color:var(--ic-syringe)}.folder-card.icon-syringe:hover{border-color:var(--ic-syringe)}
+.folder-card.icon-microscope{background:var(--ic-microscope-bg)}.folder-card.icon-microscope .folder-card-icon{color:var(--ic-microscope)}.folder-card.icon-microscope:hover{border-color:var(--ic-microscope)}
+.folder-card.icon-scan{background:var(--ic-scan-bg)}.folder-card.icon-scan .folder-card-icon{color:var(--ic-scan)}.folder-card.icon-scan:hover{border-color:var(--ic-scan)}
+.folder-card.icon-scissors{background:var(--ic-scissors-bg)}.folder-card.icon-scissors .folder-card-icon{color:var(--ic-scissors)}.folder-card.icon-scissors:hover{border-color:var(--ic-scissors)}
+.folder-card.icon-heartPulse{background:var(--ic-heartPulse-bg)}.folder-card.icon-heartPulse .folder-card-icon{color:var(--ic-heartPulse)}.folder-card.icon-heartPulse:hover{border-color:var(--ic-heartPulse)}
+.folder-card.icon-graduationCap{background:var(--ic-graduationCap-bg)}.folder-card.icon-graduationCap .folder-card-icon{color:var(--ic-graduationCap)}.folder-card.icon-graduationCap:hover{border-color:var(--ic-graduationCap)}
+.folder-card.icon-gift{background:var(--ic-gift-bg)}.folder-card.icon-gift .folder-card-icon{color:var(--ic-gift)}.folder-card.icon-gift:hover{border-color:var(--ic-gift)}
+.folder-card.icon-flag{background:var(--ic-flag-bg)}.folder-card.icon-flag .folder-card-icon{color:var(--ic-flag)}.folder-card.icon-flag:hover{border-color:var(--ic-flag)}
+.folder-card.icon-megaphone{background:var(--ic-megaphone-bg)}.folder-card.icon-megaphone .folder-card-icon{color:var(--ic-megaphone)}.folder-card.icon-megaphone:hover{border-color:var(--ic-megaphone)}
+.folder-card.icon-shield{background:var(--ic-shield-bg)}.folder-card.icon-shield .folder-card-icon{color:var(--ic-shield)}.folder-card.icon-shield:hover{border-color:var(--ic-shield)}
+.folder-card.icon-receipt{background:var(--ic-receipt-bg)}.folder-card.icon-receipt .folder-card-icon{color:var(--ic-receipt)}.folder-card.icon-receipt:hover{border-color:var(--ic-receipt)}
+.folder-card.icon-siren{background:var(--ic-siren-bg)}.folder-card.icon-siren .folder-card-icon{color:var(--ic-siren)}.folder-card.icon-siren:hover{border-color:var(--ic-siren)}
+.folder-card.icon-ear{background:var(--ic-ear-bg)}.folder-card.icon-ear .folder-card-icon{color:var(--ic-ear)}.folder-card.icon-ear:hover{border-color:var(--ic-ear)}
+@media (max-width:600px){
+  .folder-grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+}
 .img-info{padding:8px 10px}
 .img-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
 .img-meta{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.card-tags{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .img-date{font-size:9px;color:var(--muted)}
-.tag-pill{font-size:9px;padding:1px 5px;border-radius:4px;background:var(--azul-claro);color:var(--azul);font-weight:600}
-.tag-pill.g{background:var(--verde-claro);color:var(--verde)}
+.tag-pill{font-size:9px;padding:2px 9px;border-radius:999px;background:var(--azul-claro);color:var(--azul);font-weight:600;display:inline-flex;align-items:center;gap:4px;animation:pill-pop .22s cubic-bezier(.34,1.56,.64,1) backwards}
+.tag-pill:nth-child(2){animation-delay:.03s}
+.tag-pill:nth-child(3){animation-delay:.06s}
+.tag-pill:nth-child(n+4){animation-delay:.09s}
+@keyframes pill-pop{0%{opacity:0;transform:scale(.7)}100%{opacity:1;transform:scale(1)}}
+/* Botón 'x' para quitar una etiqueta a mano del borrador del modal (ver m-tag-pills/
+   removeDraftTag) — padding extra a la derecha del pill para que el texto no quede pegado al
+   botón. */
+.tag-pill:has(.tag-pill-x){padding-right:4px}
+/* Mismo rojo que .error-box (única familia de "peligro" que ya existe en el sistema, ver
+   DESIGN_TOKENS.md) — no se introduce un tono nuevo. */
+.tag-pill-x{background:#FEF2F2;border:none;color:#991B1B;width:13px;height:13px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;transition:background-color .14s ease,color .14s ease,transform .12s cubic-bezier(.34,1.56,.64,1)}
+.tag-pill-x:hover{background:#991B1B;color:#fff}
+.tag-pill-x:active{transform:scale(.8)}
+.tag-pill-x svg{width:8px;height:8px;stroke:currentColor;stroke-width:3;fill:none}
+/* Estilo "acción pendiente" compartido por dos controles del modal: el <select> "+ Agregar
+   etiqueta guardada" (ver renderTagSelect en js/app.js) y las píldoras de sugerencia que
+   aparecen bajo la descripción (ver renderTagSuggestions) — mismo tamaño/forma de píldora que
+   .tag-pill pero con borde punteado neutro, para no competir visualmente con las etiquetas ya
+   confirmadas. */
+.tag-pill-add{font-size:9px;padding:2px 8px;border-radius:999px;background:transparent;color:var(--muted);font-weight:600;border:1px dashed var(--border);cursor:pointer;outline:none;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag-pill-add:hover,.tag-pill-add:focus{border-color:var(--azul-med);color:var(--azul-med)}
 .img-card.li{display:flex;align-items:center;gap:10px;padding:9px}
 .img-card.li .img-thumb{width:76px;height:57px;aspect-ratio:unset;flex-shrink:0;border-radius:7px}
 .img-card.li .img-info{flex:1;padding:0}
@@ -146,44 +273,127 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .form-grp{margin-bottom:11px}
 .form-grp label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
 .form-grp input{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--bg);color:var(--text);outline:none;transition:border-color .14s}
-.form-grp input:focus{border-color:var(--azul-med);box-shadow:0 0 0 3px rgba(0,90,158,.1)}
+.form-grp input:focus{border-color:var(--azul-med);box-shadow:0 0 0 3px rgba(19,35,91,.1)}
 .form-grp .hint{font-size:10px;color:var(--muted);margin-top:3px}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.btn-pri{background:var(--azul);color:#fff;border:none;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px}
-.btn-sec{background:none;border:1px solid var(--border);padding:8px 14px;border-radius:8px;font-size:12px;cursor:pointer;color:var(--text);display:flex;align-items:center;gap:4px}
+.btn-pri{background:var(--azul);color:#fff;border:none;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background-color .16s ease,transform .12s cubic-bezier(.34,1.56,.64,1)}
+.btn-sec{background:none;border:1px solid var(--border);padding:8px 14px;border-radius:8px;font-size:12px;cursor:pointer;color:var(--text);display:flex;align-items:center;gap:4px;transition:background-color .16s ease,transform .12s cubic-bezier(.34,1.56,.64,1)}
 .btn-pri:hover{background:var(--azul-med)}
 .btn-sec:hover{background:var(--bg)}
-.error-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:10px 13px;font-size:11px;color:#991B1B;display:flex;gap:8px;align-items:flex-start;margin-bottom:12px}
+.btn-pri:active,.btn-sec:active{transform:scale(.96)}
+
+.error-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:10px 13px;font-size:11px;color:#991B1B;display:flex;gap:8px;align-items:flex-start;margin-bottom:12px;animation:alert-in .32s cubic-bezier(.16,1,.3,1)}
+@keyframes alert-in{0%{opacity:0;transform:translateY(-6px)}60%{opacity:1;transform:translateY(1px)}100%{opacity:1;transform:translateY(0)}}
 .ib-icon{display:inline-flex;flex-shrink:0;width:13px;height:13px}
 .ib-icon svg{width:100%;height:100%;stroke:currentColor;stroke-width:2;fill:none}
 
 /* ── MODAL ───────────────────────────────────────────── */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;padding:20px;align-items:center;justify-content:center}
-.modal-bg.open{display:flex}
-.modal{background:var(--card);border-radius:13px;width:100%;max-width:580px;overflow:hidden;display:flex;flex-direction:column;max-height:92vh}
+/* display:none↔flex se anima con @starting-style + allow-discrete (sin tocar openModal/closeModal
+   en app.js): el fondo se desvanece y la tarjeta entra con un leve overshoot, no un fade plano. */
+.modal-bg{display:none;position:fixed;inset:0;background-color:rgb(0 0 0/0);z-index:1000;padding:20px;align-items:center;justify-content:center;transition:background-color .24s cubic-bezier(.16,1,.3,1),display .24s allow-discrete}
+.modal-bg.open{display:flex;background-color:rgb(0 0 0/.55)}
+@starting-style{.modal-bg.open{background-color:rgb(0 0 0/0)}}
+.modal{background:var(--card);border-radius:13px;width:100%;max-width:580px;overflow:hidden;display:flex;flex-direction:column;max-height:92vh;opacity:1;transform:scale(1) translateY(0);transition:opacity .26s cubic-bezier(.16,1,.3,1),transform .26s cubic-bezier(.16,1,.3,1)}
+.modal-bg:not(.open) .modal{opacity:0;transform:scale(.96) translateY(8px)}
+@starting-style{.modal-bg.open .modal{opacity:0;transform:scale(.96) translateY(8px)}}
 .modal-img-wrap{width:100%;aspect-ratio:16/9;background:var(--bg);overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative}
 .modal-img-wrap img{width:100%;height:100%;object-fit:contain}
 .modal-img-wrap .ph-lg{width:64px;height:64px;opacity:.16;color:var(--azul)}
 .modal-img-wrap .ph-lg svg{width:100%;height:100%;stroke:currentColor;stroke-width:1.5;fill:none}
 .mcl{position:absolute;top:9px;right:9px;background:rgba(0,0,0,.35);border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;line-height:1}
 .mbody{padding:16px 20px;overflow-y:auto;flex:1}
-.m-title{font-size:15px;font-weight:600;margin-bottom:5px}
-.m-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.m-title{font-size:15px;font-weight:600;margin-bottom:12px}
 .m-field{display:flex;gap:8px;margin-bottom:8px;font-size:12px;align-items:flex-start}
 .m-field label{color:var(--muted);min-width:95px;flex-shrink:0;font-weight:500;padding-top:1px}
 .m-field span{color:var(--text);line-height:1.5}
 .m-field a{color:var(--azul-med);text-decoration:none;font-size:12px}
 .m-field a:hover{text-decoration:underline}
-.m-footer{border-top:1px solid var(--border);padding:12px 20px;display:flex;gap:7px;justify-content:flex-end}
+/* margin-right:auto en .m-desc-status empuja el mensaje de estado a la izquierda, dejando los
+   tres botones (Abrir en Drive / Descargar / Guardar cambios) agrupados a la derecha. */
+.m-footer{border-top:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:7px;justify-content:flex-end}
+.m-footer .m-desc-status{margin-right:auto}
+
+.m-desc-status{font-size:11px;color:var(--verde)}
+.m-desc-status.err{color:#991B1B}
+
+.m-desc-field{margin:0 0 14px}
+.m-desc-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.m-desc-input{width:100%;min-height:80px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:12px;line-height:1.5;background:var(--bg);color:var(--text);outline:none;resize:vertical;transition:border-color .14s}
+.m-desc-input:focus{border-color:var(--azul-med);box-shadow:0 0 0 3px rgba(19,35,91,.1)}
+/* Botón "Generar etiquetas" (ver generateTagSuggestions en js/app.js) — dispara la llamada a
+   Gemini bajo demanda, nunca automático. Mismo .btn-sec de siempre, solo más chico para no
+   competir visualmente con "Guardar cambios" del footer. */
+.m-gen-tags-btn{margin-top:8px;padding:6px 12px;font-size:11px}
+/* Estado de "Generar etiquetas" (ver generateTagSuggestions) — reusa .m-desc-status (mismo
+   verde/rojo que el de "Guardar cambios") pero en su propio elemento, para no compartir texto
+   con el estado de guardado del footer. */
+#mGenTagsStatus{display:block;margin-top:5px}
+#mGenTagsStatus:empty{display:none}
+/* Píldoras de etiqueta sugeridas desde el texto de la descripción (ver renderTagSuggestions) —
+   reusan .tag-pill-add (mismo estilo punteado que el selector de etiquetas guardadas) porque
+   semánticamente son la misma acción: "agregar esta etiqueta al borrador". Las sugeridas por IA
+   (.tag-pill-add.ai) llevan además el ícono de chispa para distinguirlas de las que salen de
+   coincidir texto contra el vocabulario conocido. */
+.m-tag-suggest-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.m-tag-suggest-row:empty{display:none}
+.tag-pill-add.ai{display:inline-flex;align-items:center;gap:4px;border-style:solid;border-color:var(--azul-med);color:var(--azul-med)}
+.tag-pill-add.ai svg{width:9px;height:9px;stroke:currentColor;fill:none;flex:none}
+
+/* ── ETIQUETAS DEL MODAL (vocabulario libre, ver modalDraft/addDraftTag) ──── */
+.m-tags-field{margin:0 0 12px}
+.m-tags-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.m-tag-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px}
+.m-tag-pills:empty{display:none}
+.m-tags-new-field{margin:0 0 14px}
+.m-tag-input-row{display:flex;gap:6px}
+.m-tag-input{flex:1;min-width:0;padding:8px 11px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:12px;background:var(--bg);color:var(--text);outline:none;transition:border-color .14s}
+.m-tag-input:focus{border-color:var(--azul-med);box-shadow:0 0 0 3px rgba(19,35,91,.1)}
+/* Aparece solo mientras hay texto sin confirmar en mTagInput (ver handleTagInputTyping) — deja
+   claro que Enter no es la única forma de agregar la etiqueta que se está escribiendo. */
+.m-tag-add-btn{flex:none;padding:8px 12px;font-size:11px;white-space:nowrap}
+
+/* ── MODO LECTOR (perfiles no admin, ver applyRoleUI en js/app.js) ────
+   Solo admin puede editar descripción/etiquetas — el resto ve el mismo modal pero sin los
+   controles de edición. La Edge Function catalogo vuelve a exigir role==='admin' en el PATCH,
+   así que esto es solo UX, no el control de acceso real. */
+body.viewer-role .m-tag-select,
+body.viewer-role .m-tags-new-field,
+body.viewer-role #mGenTagsBtn,
+body.viewer-role #mSaveBtn{display:none}
+body.viewer-role .m-desc-input{background:var(--bg);cursor:default;resize:none}
+body.viewer-role .m-desc-input:focus{border-color:var(--border);box-shadow:none}
 
 /* ── TAG CLOUD ───────────────────────────────────────── */
 .tag-cloud{display:flex;flex-wrap:wrap;gap:5px;padding:4px 14px 8px}
 .tag{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--bg);color:var(--muted);cursor:pointer;border:1px solid var(--border);transition:background .12s}
 .tag:hover,.tag.active{background:var(--azul-claro);color:var(--azul);border-color:var(--azul-med)}
+.tag-empty{font-size:10px;color:var(--muted);padding:2px 2px}
+
+/* ── LOGIN (login.html) — usa el lockup completo (hslv-lockup.png), ver LOGO.md ── */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px}
+.login-card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:36px 32px;max-width:360px;width:100%;box-shadow:0 2px 12px rgba(0,59,111,.1)}
+.login-logo{display:block;width:130px;margin:0 auto 20px}
+.login-title{font-size:15px;font-weight:600;color:var(--text);text-align:center;margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:22px;line-height:1.4}
+.login-pwd-wrap{position:relative}
+.login-pwd-wrap input{padding-right:34px}
+.login-pwd-toggle{position:absolute;right:7px;top:50%;transform:translateY(-50%);background:none;border:none;padding:3px;cursor:pointer;color:var(--muted);display:flex;border-radius:5px}
+.login-pwd-toggle svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.login-pwd-toggle:hover{color:var(--text);background:var(--bg)}
+.login-submit{width:100%;justify-content:center;margin-top:6px}
+.login-submit:disabled{opacity:.6;cursor:default}
+.login-footer{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;line-height:1.4}
 
 /* ── RESPONSIVE ──────────────────────────────────────── */
 @media(max-width:600px){
   .sidebar{display:none}
-  .stats-bar{grid-template-columns:repeat(3,1fr)}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
   .grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .folder-card,.btn-pri,.btn-sec,.modal-bg,.modal,.error-box,
+  .lazy-img,.drive-badge,.drive-badge .dot,.tag-pill,.tag-pill-x{
+    transition-duration:.001ms!important;animation-duration:.001ms!important
+  }
 }

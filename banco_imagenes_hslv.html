@@ -7,23 +7,14 @@
 <link rel="icon" type="image/png" href="Assets/Logo/favicon.png">
 <link rel="stylesheet" href="css/styles.css">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- Arma el .zip de descarga múltiple en el navegador — ver downloadAsZip en js/app.js. Sin esto
+     no hay backend propio que pueda generar el zip del lado del servidor. -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
 
-<!-- PANTALLA DE ACCESO — neutra, sin marca ni diseño del proyecto -->
-<div class="auth-gate" id="authGate">
-  <div class="auth-card">
-    <div class="auth-title">Acceso restringido</div>
-    <p class="auth-desc">Inicia sesión con tu cuenta autorizada para continuar.</p>
-    <div id="gateAlert"></div>
-    <button class="auth-google-btn" onclick="signIn()">
-      <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.9 32.5 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.6 29.5 3.5 24 3.5 12.7 3.5 3.5 12.7 3.5 24S12.7 44.5 24 44.5 44.5 35.3 44.5 24c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.7 19 12.5 24 12.5c3.1 0 5.8 1.1 8 3l6-6C34.5 5.6 29.5 3.5 24 3.5c-7.5 0-13.9 4.2-17.2 10.4z"/><path fill="#4CAF50" d="M24 44.5c5.4 0 10.3-2.1 14-5.4l-6.5-5.4c-2 1.4-4.6 2.2-7.5 2.2-5.4 0-9.9-3.4-11.5-8.3l-6.6 5.1C9.9 39.9 16.4 44.5 24 44.5z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.7l6.5 5.4C41.5 36.4 44.5 30.7 44.5 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
-      Iniciar sesión con Google
-    </button>
-  </div>
-</div>
-
-<!-- APP — oculta hasta iniciar sesión -->
+<!-- APP — oculta hasta que bootstrapAuth() confirme la sesión de Supabase (login.html); si no
+     hay sesión, redirige a login.html antes de mostrar nada. -->
 <div id="appShell" style="display:none">
 
 <!-- HEADER -->
@@ -34,10 +25,15 @@
     <div class="header-sub">Hospital Susana López de Valencia E.S.E.</div>
   </div>
   <div class="hdr-right">
-    <div class="drive-badge" id="driveBadge">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.7 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.61 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      <span id="driveBadgeText">Sin conectar</span>
-    </div>
+    <!-- Solo visible para role='admin' (ver applyRoleUI en js/app.js) -->
+    <button class="hdr-btn" id="btnUserAdmin" onclick="openUserAdmin()" style="display:none">
+      <svg viewBox="0 0 24 24" stroke-width="2" style="width:13px;height:13px;stroke:currentColor;fill:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Administrar usuarios
+    </button>
+    <button class="logout-badge" id="btnLogout" onclick="signOut()">
+      <svg viewBox="0 0 24 24" stroke-width="2" style="width:13px;height:13px;stroke:currentColor;fill:none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Cerrar sesión
+    </button>
   </div>
 </div>
 
@@ -45,23 +41,14 @@
 <div class="search-bar">
   <div class="search-wrap">
     <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="searchInput" type="text" placeholder="Buscar en todas las carpetas..." oninput="scheduleSearch()" disabled>
-  </div>
-  <div class="hdr-actions">
-    <button class="btn-sec" id="btnConfig" onclick="signOut()" style="font-size:12px">
-      <svg viewBox="0 0 24 24" stroke-width="2" style="width:14px;height:14px;stroke:currentColor;fill:none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Cerrar sesión
-    </button>
+    <input id="searchInput" type="text" placeholder="Buscar en todas las carpetas..." oninput="scheduleSearch()" disabled autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other">
   </div>
 </div>
 
 <!-- BODY -->
 <div class="body">
   <!-- SIDEBAR -->
-  <nav class="sidebar" aria-label="Categorías">
-    <div class="sidebar-label">Categorías</div>
-    <div id="catList"></div>
-    <div class="sdiv"></div>
+  <nav class="sidebar" aria-label="Filtros">
     <div class="sidebar-label">Tipo</div>
     <div id="typeList"></div>
     <div class="sdiv"></div>
@@ -76,7 +63,9 @@
     <div id="toolbar" class="toolbar" style="display:none">
       <select class="sort-sel" id="sortSel" onchange="filterImages()" style="margin-left:auto">
         <option value="date">Más recientes</option>
+        <option value="date-asc">Más antiguos</option>
         <option value="name">Nombre A-Z</option>
+        <option value="name-desc">Nombre Z-A</option>
       </select>
       <div class="view-toggle">
         <button class="vbtn active" id="btnG" onclick="setView('g')" aria-label="Cuadrícula">
@@ -94,6 +83,67 @@
   </div>
 </div>
 
+<!-- BARRA DE SELECCIÓN MÚLTIPLE — oculta hasta que se marque al menos una imagen (ver
+     renderSelectionBar/toggleSelect en js/app.js). -->
+<div class="selection-bar" id="selectionBar" style="display:none">
+  <span class="sb-count" id="sbCount"></span>
+  <button type="button" class="btn-sec" onclick="clearSelection()">Cancelar</button>
+  <button type="button" class="btn-pri" id="sbDownloadBtn" onclick="downloadSelection()">
+    <svg viewBox="0 0 24 24" stroke-width="2" style="width:14px;height:14px;stroke:#fff;fill:none"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+    Descargar
+  </button>
+</div>
+
+<!-- MODAL ADMINISTRAR USUARIOS — solo lo abre btnUserAdmin (admin). Ver openUserAdmin/
+     closeUserAdmin/renderUserAdminList en js/app.js. -->
+<div class="modal-bg" id="userAdminModal" onclick="closeUserAdminBg(event)">
+  <div class="modal">
+    <div class="mbody">
+      <div class="m-title">Administrar usuarios</div>
+      <div id="uaAlert"></div>
+
+      <div class="ua-list" id="uaList"></div>
+
+      <div class="ua-new">
+        <div class="m-title" style="font-size:13px;margin-bottom:10px">Crear usuario</div>
+        <div class="form-grp">
+          <label for="uaEmail">Correo</label>
+          <!-- autocomplete="off" + los data-*ignore de abajo: el "off" evita las sugerencias
+               propias del navegador (direcciones/correos ya usados); los data-*ignore hacen que
+               gestores de contraseñas externos (LastPass, 1Password, Bitwarden, Dashlane) no
+               metan su propio ícono ni sugerencia encima del campo — esos ignoran autocomplete
+               "off" porque no es un login real. -->
+          <input type="email" id="uaEmail" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other">
+        </div>
+        <div class="form-grp">
+          <label for="uaPassword">Contraseña</label>
+          <div class="login-pwd-wrap">
+            <input type="password" id="uaPassword" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Mínimo 6 caracteres" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other">
+            <button type="button" class="login-pwd-toggle" id="uaPwdToggle" onclick="toggleUaPwdVisibility()" aria-label="Mostrar contraseña">
+              <svg viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="form-grp">
+          <label for="uaRole">Rol</label>
+          <select id="uaRole">
+            <option value="viewer">Usuario</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="m-footer">
+      <span class="m-desc-status" id="uaCreateStatus"></span>
+      <button class="btn-sec" onclick="closeUserAdmin()">Cerrar</button>
+      <button class="btn-pri" id="uaCreateBtn" onclick="createUserAdmin()">
+        <svg viewBox="0 0 24 24" stroke-width="2" style="width:14px;height:14px;stroke:#fff;fill:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg>
+        Crear usuario
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL DETALLE -->
 <div class="modal-bg" id="detailModal" onclick="closeModalBg(event)">
   <div class="modal">
@@ -103,22 +153,45 @@
     </div>
     <div class="mbody">
       <div class="m-title" id="mTitle"></div>
-      <div class="m-tags" id="mTags"></div>
-      <div class="m-field"><label>Categoría</label><span id="mCat"></span></div>
+      <div class="m-tags-field">
+        <label for="mTagSelect">Etiquetas</label>
+        <div class="m-tag-pills" id="mTagPills"></div>
+        <select class="tag-pill-add m-tag-select" id="mTagSelect" onchange="if(this.value){addDraftTag(this.value);this.value='';}">
+          <option value="">+ Agregar etiqueta</option>
+        </select>
+      </div>
+      <div class="m-desc-field">
+        <label for="mDescInput">Descripción detallada</label>
+        <textarea id="mDescInput" class="m-desc-input" placeholder="Describe la imagen: personas, contexto, evento, lugar..." oninput="handleDescInput()"></textarea>
+        <button type="button" class="btn-sec m-gen-tags-btn" id="mGenTagsBtn" onclick="generateTagSuggestions()"><svg viewBox="0 0 24 24" stroke-width="2" style="width:12px;height:12px;stroke:currentColor;fill:none"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/></svg> Generar etiquetas</button>
+        <span class="m-desc-status" id="mGenTagsStatus"></span>
+        <div class="m-tag-suggest-row" id="mTagSuggestRow"></div>
+      </div>
+      <div class="m-tags-new-field">
+        <div class="m-tag-input-row">
+          <input id="mTagInput" class="m-tag-input" type="text" placeholder="¿No está en la lista? Escribe una etiqueta nueva" oninput="handleTagInputTyping()" onkeydown="handleTagInputKey(event)">
+          <button type="button" class="btn-sec m-tag-add-btn" id="mTagAddBtn" onclick="addTagFromInput()" style="display:none">+ Agregar</button>
+        </div>
+      </div>
       <div class="m-field"><label>Tipo</label><span id="mType"></span></div>
       <div class="m-field"><label>Tamaño</label><span id="mSize"></span></div>
       <div class="m-field"><label>Modificado</label><span id="mDate"></span></div>
       <div class="m-field"><label>Ver en Drive</label><a id="mLink" href="#" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px"><svg viewBox="0 0 24 24" stroke-width="2" style="width:13px;height:13px;stroke:currentColor;fill:none"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg> Abrir en Google Drive</a></div>
     </div>
     <div class="m-footer">
+      <span class="m-desc-status" id="mDescStatus"></span>
       <button class="btn-sec" onclick="openInDrive()"><svg viewBox="0 0 24 24" stroke-width="2" style="width:14px;height:14px;stroke:currentColor;fill:none"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg> Abrir en Drive</button>
-      <button class="btn-pri" onclick="downloadFile()"><svg viewBox="0 0 24 24" stroke-width="2" style="width:14px;height:14px;stroke:#fff;fill:none"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg> Descargar</button>
+      <button class="btn-sec" onclick="downloadFile()"><svg viewBox="0 0 24 24" stroke-width="2" style="width:14px;height:14px;stroke:currentColor;fill:none"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg> Descargar</button>
+      <button class="btn-pri" onclick="saveModalChanges()" id="mSaveBtn"><svg viewBox="0 0 24 24" stroke-width="2" style="width:14px;height:14px;stroke:#fff;fill:none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg> Guardar cambios</button>
     </div>
   </div>
 </div>
 
 </div><!-- /appShell -->
 
-<script src="js/app.js"></script>
+<!-- ?v= evita que el navegador sirva una copia vieja en caché de app.js tras un F5 normal
+     (sin Cache-Control desde el servidor estático, un F5 solo revalida el HTML, no los <script
+     src>) — subir este número cada vez que se edite app.js. -->
+<script src="js/app.js?v=28"></script>
 </body>
 </html>
