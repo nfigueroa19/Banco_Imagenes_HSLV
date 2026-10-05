@@ -12,3 +12,12 @@ supabase/.temp
 # Sistema operativo / editor
 .DS_Store
 Thumbs.db
+
+# Cache local de wrangler (Cloudflare Pages)
+.wrangler/
+
+# Build minificado/ofuscado para producción (se regenera desde los fuentes, no se versiona)
+dist/
+
+# Dependencias de build
+node_modules/

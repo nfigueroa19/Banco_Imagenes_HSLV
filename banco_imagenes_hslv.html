@@ -13,42 +13,59 @@
 </head>
 <body>
 
+<!-- Pantalla de carga Imago: visible desde el primer pintado al abrir la raíz '/', hasta que la
+     app termina de cargar (hideSplash en js/app.js). No se muestra al abrir una carpeta (?folder=). -->
+<div class="splash" id="splash" role="status" aria-live="polite">
+  <div class="splash-inner">
+    <img class="splash-logo" src="Assets/Logo/imago-wordmark.webp" alt="Imago" width="320" height="101">
+    <div class="splash-title">Banco de Imágenes <br>Hospital Susana López de Valencia E.S.E.</div>
+    <div class="splash-dots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="splash-credit">Diseñado por Ing. Nicolás Figueroa Maca</div>
+    <span class="sr-only">Cargando…</span>
+  </div>
+</div>
+<script>if(!new URLSearchParams(location.search).get('folder'))document.getElementById('splash').classList.add('show');</script>
+
 <!-- APP — oculta hasta que bootstrapAuth() confirme la sesión de Supabase (login.html); si no
      hay sesión, redirige a login.html antes de mostrar nada. -->
 <div id="appShell" style="display:none">
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-logo"><img src="Assets/Logo/hslv-mark.png" alt="Hospital Susana López de Valencia"></div>
+  <div class="header-logo"><img src="Assets/Logo/hslv-mark-blanco.webp" alt="Hospital Susana López de Valencia"></div>
   <div>
     <div class="header-title">Banco de Imágenes Institucionales</div>
     <div class="header-sub">Hospital Susana López de Valencia E.S.E.</div>
   </div>
+  <a class="header-brand" href="/" title="Ir al inicio" aria-label="Ir al inicio"><img src="Assets/Logo/imago-wordmark.png" alt="Imago" width="120" height="38"></a>
   <div class="hdr-right">
     <!-- Solo visible para role='admin' (ver applyRoleUI en js/app.js) -->
-    <button class="hdr-btn" id="btnUserAdmin" onclick="openUserAdmin()" style="display:none">
+    <button class="hdr-btn" id="btnUserAdmin" aria-label="Administrar usuarios" onclick="openUserAdmin()" style="display:none">
       <svg viewBox="0 0 24 24" stroke-width="2" style="width:13px;height:13px;stroke:currentColor;fill:none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Administrar usuarios
+      <span class="btn-txt">Administrar usuarios</span>
     </button>
-    <button class="logout-badge" id="btnLogout" onclick="signOut()">
+    <button class="logout-badge" id="btnLogout" aria-label="Cerrar sesión" onclick="openLogoutConfirm()">
       <svg viewBox="0 0 24 24" stroke-width="2" style="width:13px;height:13px;stroke:currentColor;fill:none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Cerrar sesión
+      <span class="btn-txt">Cerrar sesión</span>
     </button>
   </div>
 </div>
 
 <!-- SEARCH BAR -->
 <div class="search-bar">
+  <!-- Solo en pantallas angostas (CSS): muestra/oculta la barra lateral de filtros, que ahí no cabe al costado. -->
+  <button type="button" class="btn-sec btn-filters" id="btnFilters" onclick="document.body.classList.toggle('filters-open')" aria-label="Filtros"><svg viewBox="0 0 24 24" stroke-width="2" style="width:14px;height:14px;stroke:currentColor;fill:none"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg>Filtros</button>
   <div class="search-wrap">
     <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input id="searchInput" type="text" placeholder="Buscar en todas las carpetas..." oninput="scheduleSearch()" disabled autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other">
+    <button type="button" class="sclear" id="searchClear" onclick="clearSearch(true)" title="Borrar búsqueda y volver (Esc)" aria-label="Borrar búsqueda y volver" style="display:none">&times;</button>
   </div>
 </div>
 
 <!-- BODY -->
 <div class="body">
   <!-- SIDEBAR -->
-  <nav class="sidebar" aria-label="Filtros">
+  <nav class="sidebar" aria-label="Filtros" onclick="if(event.target.closest('.cat-item,.tag'))document.body.classList.remove('filters-open')">
     <div class="sidebar-label">Tipo</div>
     <div id="typeList"></div>
     <div class="sdiv"></div>
@@ -58,6 +75,13 @@
 
   <!-- MAIN -->
   <div class="main">
+    <!-- Banda de navegación (ver buildBreadcrumb en js/app.js): ← → = historial, ruta = jerarquía. -->
+    <div id="navBand" class="nav-band" style="display:none">
+      <button type="button" class="nbtn" id="navBack" onclick="navBack()" title="Atrás (volver a donde estabas)" aria-label="Atrás" disabled><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+      <button type="button" class="nbtn" id="navFwd" onclick="navForward()" title="Adelante" aria-label="Adelante" disabled><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      <span class="nsep"></span>
+      <nav id="breadcrumbBar" class="breadcrumb" aria-label="Ruta de carpetas"></nav>
+    </div>
     <div id="alertBox"></div>
     <div id="statsBar" class="stats-bar" style="display:none"></div>
     <div id="toolbar" class="toolbar" style="display:none">
@@ -67,21 +91,16 @@
         <option value="name">Nombre A-Z</option>
         <option value="name-desc">Nombre Z-A</option>
       </select>
-      <div class="view-toggle">
-        <button class="vbtn active" id="btnG" onclick="setView('g')" aria-label="Cuadrícula">
-          <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        </button>
-        <button class="vbtn" id="btnL" onclick="setView('l')" aria-label="Lista">
-          <svg viewBox="0 0 24 24" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        </button>
-      </div>
+      <div class="view-menu" id="viewMenu"><button type="button" class="vmbtn" id="viewBtn" aria-haspopup="menu" aria-expanded="false" onclick="toggleViewMenu(event)"><svg viewBox="0 0 24 24" stroke-width="2" class="vico"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Ver<svg viewBox="0 0 24 24" stroke-width="2.2" class="vchev"><path d="m6 9 6 6 6-6"/></svg></button><div class="vpop" id="viewPop" role="menu" style="display:none"><button type="button" role="menuitemradio" class="vitem" data-v="xxl" aria-checked="false" onclick="setView('xxl')"><span class="vck">✓</span>Iconos muy grandes</button><button type="button" role="menuitemradio" class="vitem" data-v="xl" aria-checked="false" onclick="setView('xl')"><span class="vck">✓</span>Iconos grandes</button><button type="button" role="menuitemradio" class="vitem" data-v="m" aria-checked="false" onclick="setView('m')"><span class="vck">✓</span>Iconos medianos</button><button type="button" role="menuitemradio" class="vitem" data-v="s" aria-checked="false" onclick="setView('s')"><span class="vck">✓</span>Iconos pequeños</button><button type="button" role="menuitemradio" class="vitem" data-v="l" aria-checked="false" onclick="setView('l')"><span class="vck">✓</span>Lista</button></div></div>
     </div>
-    <div id="breadcrumbBar" class="breadcrumb"></div>
     <div id="folderList" class="folder-list"></div>
     <div class="grid" id="imageGrid"></div>
     <div id="gridSentinel" style="height:1px"></div>
   </div>
 </div>
+
+<!-- PIE DE PÁGINA — sellos y certificaciones del hospital (no va en login). -->
+<footer class="app-footer"><img src="Assets/Logo/pie-logos.webp" alt="Acreditación en Salud, ICONTEC ISO 14001, IQNET, IAMII, Hospirank, Sala Amiga de la Familia Lactante, Red Global de Hospitales Verdes y Saludables, Red Nacional para el Fomento de la Investigación" width="1716" height="194" loading="lazy" decoding="async"></footer>
 
 <!-- BARRA DE SELECCIÓN MÚLTIPLE — oculta hasta que se marque al menos una imagen (ver
      renderSelectionBar/toggleSelect en js/app.js). -->
@@ -92,6 +111,20 @@
     <svg viewBox="0 0 24 24" stroke-width="2" style="width:14px;height:14px;stroke:#fff;fill:none"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
     Descargar
   </button>
+</div>
+
+<!-- MODAL CONFIRMAR CIERRE DE SESIÓN — lo abre btnLogout (openLogoutConfirm en js/app.js). -->
+<div class="modal-bg" id="logoutModal" onclick="if(event.target===this)closeLogoutConfirm()">
+  <div class="modal" style="max-width:380px" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
+    <div class="mbody">
+      <div class="m-title" id="logoutTitle">¿Cerrar sesión?</div>
+      <p style="font-size:12px;color:var(--muted);line-height:1.5">Tendrás que iniciar sesión de nuevo para volver a ver el banco de imágenes.</p>
+    </div>
+    <div class="m-footer">
+      <button class="btn-sec" onclick="closeLogoutConfirm()">Cancelar</button>
+      <button class="btn-pri" id="logoutConfirmBtn" onclick="signOut()" style="background:#C0392B">Cerrar sesión</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL ADMINISTRAR USUARIOS — solo lo abre btnUserAdmin (admin). Ver openUserAdmin/
@@ -192,6 +225,6 @@
 <!-- ?v= evita que el navegador sirva una copia vieja en caché de app.js tras un F5 normal
      (sin Cache-Control desde el servidor estático, un F5 solo revalida el HTML, no los <script
      src>) — subir este número cada vez que se edite app.js. -->
-<script src="js/app.js?v=28"></script>
+<script src="js/app.js?v=51"></script>
 </body>
 </html>

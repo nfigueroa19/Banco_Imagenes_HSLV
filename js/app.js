@@ -12,16 +12,11 @@
    tokens nuevos en silencio, sin popup, mientras la persona no revoque el acceso desde su
    cuenta de Google.
 
-   CLIENT_ID: DE PRUEBA — proyecto de Google Cloud personal del desarrollador,
-   pantalla de consentimiento en modo "Pruebas". Al entregar el proyecto,
-   comunicaciones debe generar su propio Client ID desde un proyecto de
-   Google Cloud institucional (idealmente pantalla de consentimiento
-   "Interno" si el proyecto queda bajo el Workspace del hospital), y
-   reemplazar el valor de abajo. Ver checklist de credenciales en
-   _Segundo_Cerebro/01 Proyectos/banco-imagenes-hslv.md
+   CLIENT_ID: proyecto "Banco de Imagenes" de la organización hosusana.gov.co,
+   pantalla de consentimiento tipo "Interno" (solo cuentas del dominio, sin verificación).
    ══════════════════════════════════════════════════ */
 var CONFIG = {
-  CLIENT_ID: '1020267220447-rebduv63t3qntjruv6lbmh29vhnualsf.apps.googleusercontent.com', // ← DE PRUEBA, reemplazar en entrega final
+  CLIENT_ID: '780037425031-ae7aolob458curcn41p3acmatva54k4t.apps.googleusercontent.com', // ← proyecto institucional hosusana.gov.co, pantalla de consentimiento Interno
   FOLDER_ID: '14dBvsP4SU8qNdIJvjYrzx_FR_oWVyYb7', // ← carpeta real del banco de imágenes en Drive
   SUPABASE_FUNCTION_URL: 'https://jxndazzqsxevlohpfjge.supabase.co/functions/v1/catalogo', // ← Edge Function "catalogo"
   DRIVE_AUTH_FUNCTION_URL: 'https://jxndazzqsxevlohpfjge.supabase.co/functions/v1/drive-auth', // ← Edge Function "drive-auth"
@@ -72,6 +67,40 @@ var ICONS = {
   receipt:'<svg viewBox="0 0 24 24"><path d="M12 17V7"/><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"/><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"/></svg>',
   siren:'<svg viewBox="0 0 24 24"><path d="M7 18v-6a5 5 0 1 1 10 0v6"/><path d="M5 21a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z"/><path d="M21 12h1"/><path d="M18.5 4.5 18 5"/><path d="M2 12h1"/><path d="M12 2v1"/><path d="m4.929 4.929.707.707"/><path d="M12 12v6"/></svg>',
   ear:'<svg viewBox="0 0 24 24"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"/><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"/></svg>',
+  /* Set ampliado (2026-10-01): íconos de ICON_RULES para carpetas nuevas + pool de AUTO_ICONS. Lucide, ISC. */
+  plane:'<svg viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>',
+  droplets:'<svg viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>',
+  ribbon:'<svg viewBox="0 0 24 24"><path d="M12 11.22C11 9.997 10 9 10 8a2 2 0 0 1 4 0c0 1-.998 2.002-2.01 3.22"/><path d="m12 18 2.57-3.5"/><path d="M6.243 9.016a7 7 0 0 1 11.507-.009"/><path d="M9.35 14.53 12 11.22"/><path d="M9.35 14.53C7.728 12.246 6 10.221 6 7a6 5 0 0 1 12 0c-.005 3.22-1.778 5.235-3.43 7.5l3.557 4.527a1 1 0 0 1-.203 1.43l-1.894 1.36a1 1 0 0 1-1.384-.215L12 18l-2.679 3.593a1 1 0 0 1-1.39.213l-1.865-1.353a1 1 0 0 1-.203-1.422z"/></svg>',
+  badgeCheck:'<svg viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m16 9-5.5 5.5L8 12"/></svg>',
+  landmark:'<svg viewBox="0 0 24 24"><path d="M10 18v-7"/><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/></svg>',
+  clipboardCheck:'<svg viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>',
+  lightbulb:'<svg viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>',
+  globe:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+  messagesSquare:'<svg viewBox="0 0 24 24"><path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1"/></svg>',
+  presentation:'<svg viewBox="0 0 24 24"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg>',
+  star:'<svg viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>',
+  cake:'<svg viewBox="0 0 24 24"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/></svg>',
+  palette:'<svg viewBox="0 0 24 24"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>',
+  house:'<svg viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  accessibility:'<svg viewBox="0 0 24 24"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg>',
+  rainbow:'<svg viewBox="0 0 24 24"><path d="M22 17a10 10 0 0 0-20 0"/><path d="M6 17a6 6 0 0 1 12 0"/><path d="M10 17a2 2 0 0 1 4 0"/></svg>',
+  handHeart:'<svg viewBox="0 0 24 24"><path d="M11 14h2a2 2 0 0 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"/><path d="m14.45 13.39 5.05-4.694C20.196 8 21 6.85 21 5.75a2.75 2.75 0 0 0-4.797-1.837.276.276 0 0 1-.406 0A2.75 2.75 0 0 0 11 5.75c0 1.2.802 2.248 1.5 2.946L16 11.95"/><path d="m2 15 6 6"/><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a1 1 0 0 0-2.75-2.91"/></svg>',
+  pill:'<svg viewBox="0 0 24 24"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>',
+  flaskConical:'<svg viewBox="0 0 24 24"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/></svg>',
+  wind:'<svg viewBox="0 0 24 24"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg>',
+  activity:'<svg viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>',
+  dumbbell:'<svg viewBox="0 0 24 24"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4"/><path d="m20.1 3.9 1.4-1.4"/><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/><path d="m9.6 14.4 4.8-4.8"/></svg>',
+  bone:'<svg viewBox="0 0 24 24"><path d="M17 10c.7-.7 1.69 0 2.5 0a2.5 2.5 0 1 0 0-5 .5.5 0 0 1-.5-.5 2.5 2.5 0 1 0-5 0c0 .81.7 1.8 0 2.5l-7 7c-.7.7-1.69 0-2.5 0a2.5 2.5 0 0 0 0 5c.28 0 .5.22.5.5a2.5 2.5 0 1 0 5 0c0-.81-.7-1.8 0-2.5Z"/></svg>',
+  ambulance:'<svg viewBox="0 0 24 24"><path d="M10 10H6"/><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.28a1 1 0 0 0-.684-.948l-1.923-.641a1 1 0 0 1-.578-.502l-1.539-3.076A1 1 0 0 0 16.382 8H14"/><path d="M8 8v4"/><path d="M9 18h6"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>',
+  headset:'<svg viewBox="0 0 24 24"><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"/><path d="M21 16v2a4 4 0 0 1-4 4h-5"/></svg>',
+  store:'<svg viewBox="0 0 24 24"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></svg>',
+  heart:'<svg viewBox="0 0 24 24"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>',
+  hardHat:'<svg viewBox="0 0 24 24"><path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5"/><path d="M14 6a6 6 0 0 1 6 6v3"/><path d="M4 15v-3a6 6 0 0 1 6-6"/><rect x="2" y="15" width="20" height="4" rx="1"/></svg>',
+  cpu:'<svg viewBox="0 0 24 24"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>',
+  layers:'<svg viewBox="0 0 24 24"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg>',
+  bookmark:'<svg viewBox="0 0 24 24"><path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"/></svg>',
+  tag:'<svg viewBox="0 0 24 24"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>',
+  shapes:'<svg viewBox="0 0 24 24"><path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>',
 };
 
 /* Ícono + color de respaldo para tarjetas de carpeta que no matchean un ICON_RULE específico
@@ -91,14 +120,14 @@ var TYPES=[{id:'all',label:'Todos los formatos'},{id:'jpg',label:'JPG / JPEG'},{
 /* Palabras clave sin tildes (comparadas contra texto ya normalizado por normalizeText, ver
    catForFolderName) — así "Capacitación"/"capacitacion" matchean igual. */
 var CAT_KW={
-  talento:['talento','personal medico','personal','enfermera','bienestar','capacitacion','induccion','reinduccion','formacion','auxiliar','profesional','colaborador','deportiv','recreacion','sustentacion'],
-  servicios:['urgencias','laboratorio','farmacia','cirugia','hospitaliz','consulta','triage','medicamento','seguridad del paciente','pediatria','ginecologia','gastroenterologia','fisioterapia','quirofano','infeccion','tamizaje','camillero','simulacro','rayos x','radiologia','uci','infante'],
-  infra:['fachada','edificio','sala','instalacion','señalizacion','infraestructura','remodelacion','sede','equipo medico','equipos medicos'],
-  eventos:['evento','ceremonia','lanzamiento','celebracion','dia del','conmemorativo','graduacion','acto','reconocimiento','feria','marcha','encuentro'],
-  comunidad:['comunidad','paciente','jornada','vacunacion','barrio','usuario','extramural','adulto mayor','madre','violencia de genero','campaña de salud','campañas de salud'],
-  rse:['ambiental','social','voluntariado','sostenib','arbol','reciclaje','responsabilidad'],
-  gestion:['reunion','comite','directiva','gestion','rendicion','mipg','calidad','acreditacion','facturacion','campaña interna','campañas internas'],
-  especial:['redes','prensa','banner','diseño','portada','publicidad','institucional','fotografia','susanita'],
+  talento:['talento','personal medico','personal','enfermera','bienestar','capacitacion','induccion','reinduccion','formacion','auxiliar','profesional','colaborador','deportiv','recreacion','sustentacion','clima laboral','pausa activa','empleado','funcionario','residente','practicante','estudiante','pasante'],
+  servicios:['urgencias','laboratorio','farmacia','cirugia','hospitaliz','consulta','triage','medicamento','seguridad del paciente','pediatria','ginecologia','gastroenterologia','fisioterapia','quirofano','infeccion','tamizaje','camillero','simulacro','rayos x','radiologia','uci','infante','obstetric','neonat','trauma','ortoped','respirator','paliativ','fonoaudiolog','nutricion','psicolog','oncolog','cardiolog','imagenolog','ecograf','mamograf','endoscop','dialisis','esterilizacion','banco de sangre','cuidados intensivos','emergencia','parto','lactancia'],
+  infra:['fachada','edificio','sala','instalacion','señalizacion','infraestructura','remodelacion','sede','equipo medico','equipos medicos','obra','construccion','ampliacion','pasillo','recepcion','parqueadero','zona verde','aerea','aereo','dron','cubierta','lavanderia','cocina'],
+  eventos:['evento','ceremonia','lanzamiento','celebracion','dia del','conmemorativo','graduacion','acto','reconocimiento','feria','marcha','encuentro','navidad','novena','posada','cumple','aniversario','festival','exposicion','foro','simposio','congreso','taller','seminario','visita'],
+  comunidad:['comunidad','paciente','jornada','vacunacion','barrio','usuario','extramural','adulto mayor','madre','violencia de genero','campaña de salud','campañas de salud','institucion educativa','colegio','escuela','familia','cuidador','gestante','lactante','discapacidad','inclusion','lgbt','indigena','victima','habitante'],
+  rse:['ambiental','social','voluntariado','sostenib','arbol','reciclaje','responsabilidad','medio ambiente','residuos','huerta','donacion','solidari','humaniz'],
+  gestion:['reunion','comite','directiva','gestion','rendicion','mipg','calidad','acreditacion','facturacion','campaña interna','campañas internas','auditoria','autoevaluacion','plan de mejora','indicador','informe','estadistic','politica','planeacion','estrategic','mesa de','consejo','secretaria','minsalud','supersalud','contratacion'],
+  especial:['redes','prensa','banner','diseño','portada','publicidad','institucional','fotografia','susanita','mascota','video','audiovisual','entrevista','radio','boletin','pagina web','digital','arte','pintura','galeria'],
 };
 
 var allFiles=[], activeType='all', activeTag=null, viewMode='g', currentFile=null;
@@ -113,62 +142,159 @@ var supabase=null, supabaseToken=null, userEmail=null, authInitialized=false;
 var userRole=null, isAdmin=false;
 var driveToken=null, driveCodeClient=null;
 var currentFolders=[], breadcrumb=[], searchMode=false, searchDebounceTimer=null;
+/* Posición de la entrada actual dentro del historial propio de la app (history.state.n) y la más
+   lejana alcanzada: el navegador no dice si hay "adelante", así que se lleva la cuenta aquí para
+   habilitar/deshabilitar los botones ← → de la banda de navegación (ver buildBreadcrumb). */
+var navPos=(history.state&&typeof history.state.n==='number')?history.state.n:0, navMax=navPos;
 
-/* Quita tildes/diacríticos para que "Capacitación" matchee la keyword "capacitacion". */
+/* Normaliza un nombre para compararlo con palabras clave: minúsculas, sin tildes y con todo lo que
+   no sea letra o dígito convertido en espacio ("01_ENERO", "UCI-A" → "01 enero", "uci a"), así
+   "Capacitación"/"capacitacion" y "LAVADO_MANOS"/"lavado manos" se tratan igual. */
 function normalizeText(s){
-  return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+}
+
+/* ¿a y b difieren como máximo en una letra (sustitución, inserción o borrado)? */
+function editDistanceLe1(a,b){
+  if(a===b) return true;
+  var la=a.length, lb=b.length;
+  if(Math.abs(la-lb)>1) return false;
+  var i=0;
+  while(i<la&&i<lb&&a.charAt(i)===b.charAt(i)) i++;
+  if(la===lb) return a.slice(i+1)===b.slice(i+1);
+  return la>lb ? a.slice(i+1)===b.slice(i) : a.slice(i)===b.slice(i+1);
+}
+
+/* ¿La palabra clave coincide con el nombre ya normalizado (text) / partido en palabras (words)?
+   - Frase de varias palabras ("rayos x"): debe aparecer empezando en el límite de una palabra.
+   - Palabra suelta: coincide si alguna palabra del nombre EMPIEZA con ella — es una raíz ligera
+     ("vacun" → vacunación/vacunas; "hospitaliz" → hospitalización) y evita los falsos positivos de
+     la búsqueda por substring ("uci" dentro de "producir", "acto" dentro de "factores").
+   - Raíces de 8+ letras toleran UNA errata contra el inicio de la palabra: los nombres reales de
+     Drive las tienen ("SEGURIDAAD", "CUMPLEÑAOS"). Las cortas no: con 6 letras "quimic" confundiría "quimioterapia" o "cumple" con "cumplimiento". */
+function kwMatches(text,words,kw){
+  if(kw.indexOf(' ')>-1) return (' '+text).indexOf(' '+kw)>-1;
+  for(var i=0;i<words.length;i++){
+    var w=words[i];
+    if(w.indexOf(kw)===0) return true;
+    if(kw.length>=8 && w.length>=kw.length-1 && editDistanceLe1(w.slice(0,kw.length),kw)) return true;
+  }
+  return false;
+}
+function anyKw(text,words,list){
+  for(var i=0;i<list.length;i++){ if(kwMatches(text,words,normalizeText(list[i]))) return true; }
+  return false;
 }
 
 /* Estilo (ícono+color) de una tarjeta de carpeta según su nombre, por palabra clave (CAT_KW) —
    ej. "Jornada de vacunación" cae en Comunidad, "Bienestar laboral" en Talento Humano, etc.
-   Devuelve null si el nombre no coincide con ninguna (la tarjeta queda neutra). */
-function catForFolderName(name){
-  var text=normalizeText(name);
+   Devuelve null si el nombre no coincide con ninguna. */
+function catForText(text,words){
   for(var i=0;i<FOLDER_STYLES.length;i++){
     var kws=CAT_KW[FOLDER_STYLES[i].id];
-    if(kws && kws.some(function(k){return text.indexOf(normalizeText(k))>-1;})) return FOLDER_STYLES[i].id;
+    if(kws && anyKw(text,words,kws)) return FOLDER_STYLES[i].id;
   }
   return null;
 }
 
 /* Ícono (y color, ver --ic-* en css/styles.css) específico de una tarjeta de carpeta, más
    concreto que el genérico de su categoría (ej. cámara+sepia para "Fotografías", jeringa+azul
-   médico para "Vacunación" en vez del apretón de manos genérico de Comunidad). Así "Pediatría"
-   y "Laboratorio" —ambas Servicios Asistenciales— se distinguen entre sí, no solo de otras
-   categorías. Se evalúa en orden, la primera coincidencia gana; agregar una fila nueva aquí es
-   la forma de sumar variedad a futuro sin tocar CAT_KW. Si nada coincide, la tarjeta cae al
-   ícono + color de respaldo por palabra clave (catForFolderName / FOLDER_STYLES). */
+   médico para "Vacunación" en vez del apretón de manos genérico de Comunidad). Se evalúa en orden,
+   la primera coincidencia gana (lo más específico primero); agregar una fila nueva aquí es la
+   forma de sumar variedad a futuro sin tocar CAT_KW — y si el ícono es nuevo, también hace falta
+   su SVG en ICONS y su --ic-<nombre> en css/styles.css. Las palabras clave son RAÍCES sin tildes
+   (ver kwMatches). Si nada coincide, la tarjeta cae al ícono + color de respaldo por palabra clave
+   (catForText / FOLDER_STYLES) y, si tampoco, a autoFolderStyle. */
 var ICON_RULES=[
-  {icon:'camera',       kw:['foto']},
-  {icon:'baby',         kw:['pediatria','infante','madre']},
-  {icon:'syringe',      kw:['vacun']},
-  {icon:'microscope',   kw:['laboratorio','gastroenterolog','infeccion']},
-  {icon:'scan',         kw:['rayos x','radiolog']},
-  {icon:'scissors',     kw:['quirofano','cirugia']},
-  {icon:'heartPulse',   kw:['uci','urgencias','hospitaliz']},
-  {icon:'graduationCap',kw:['capacitacion','induccion','reinduccion','formacion']},
-  {icon:'gift',         kw:['celebracion','conmemorativo','feria']},
-  {icon:'flag',         kw:['marcha']},
-  {icon:'megaphone',    kw:['campaña']},
-  {icon:'shield',       kw:['seguridad del paciente','violencia de genero']},
-  {icon:'receipt',      kw:['facturacion']},
-  {icon:'siren',        kw:['simulacro']},
-  {icon:'ear',          kw:['tamizaje','auditiv']},
+  {icon:'camera',        kw:['foto']},
+  {icon:'plane',         kw:['aere','dron','panoram']},
+  {icon:'gift',          kw:['regalo','obsequio']},
+  {icon:'ear',          kw:['auditiv','fonoaudiolog','audiolog']},
+  {icon:'baby',          kw:['pediatr','infan','madre','nino','nina','lactancia','neonat','prematur','recien nacido','parto','obstetric','ginecolog','materno','gestante','embarazo','bebe','iamii','camii']},
+  {icon:'syringe',       kw:['vacun','inmuniz']},
+  {icon:'microscope',    kw:['laboratorio','gastroenterolog','infeccion','patolog','microbiolog','citolog']},
+  {icon:'scan',          kw:['rayos x','radiolog','imagenolog','ecograf','tomograf','resonancia','mamograf']},
+  {icon:'scissors',      kw:['quirofano','cirugia','cirujan','quirurg']},
+  {icon:'pill',          kw:['farmac','medicament','droguer']},
+  {icon:'flaskConical',  kw:['quimic']},
+  {icon:'wind',          kw:['respirator','neumolog','oxigeno']},
+  {icon:'bone',          kw:['trauma','ortoped','fractur']},
+  {icon:'ambulance',     kw:['camiller','ambulancia','traslado']},
+  {icon:'activity',      kw:['fisioterap','terapeuta','rehabilit','terapia']},
+  {icon:'dumbbell',      kw:['deport','recreacion','gimnasia','pausa']},
+  {icon:'heartPulse',    kw:['uci','urgencias','hospitaliz','cardiolog','cuidados intensivos']},
+  {icon:'graduationCap', kw:['capacitacion','induccion','reinduccion','formacion','educacion','universidad','estudiante','pasantia']},
+  {icon:'handHeart',     kw:['humaniz','paliativ','adulto mayor','geriatr','solidari','donacion','cuidado']},
+  {icon:'ribbon',        kw:['cancer','oncolog','quimioterap','radioterap','mama']},
+  {icon:'droplets',      kw:['lavado','higiene','manos']},
+  {icon:'badgeCheck',    kw:['acreditacion','certificacion','habilitacion']},
+  {icon:'landmark',      kw:['consejo','minsalud','ministerio','secretaria','alcaldia','gobernacion','supersalud','territorial']},
+  {icon:'clipboardCheck',kw:['autoevaluacion','evaluacion','auditoria','inspeccion','visita','verificacion','seguimiento']},
+  {icon:'shield',        kw:['segurida','violencia','bioseguridad','riesgo']},
+  {icon:'lightbulb',     kw:['ideacion','innovacion','desafio','creativ','idea']},
+  {icon:'globe',         kw:['web','pagina','redes sociales','digital','internet']},
+  {icon:'messagesSquare',kw:['charla','foro','conversatorio','socializacion','conferencia','simposio','congreso','mesa de']},
+  {icon:'presentation',  kw:['taller','curso','seminario','diplomado','sustentacion']},
+  {icon:'cake',          kw:['cumple','aniversario']},
+  {icon:'star',          kw:['novena','navidad','navideno','pesebre','posada','aguinaldo']},
+  {icon:'palette',       kw:['arte','expo','pintur','artistic','diseno','grafic','galeria']},
+  {icon:'house',         kw:['vivienda','hogar','domicili']},
+  {icon:'accessibility', kw:['discapacidad','inclusion','accesibilidad']},
+  {icon:'rainbow',       kw:['lgbt','diversidad']},
+  {icon:'heart',         kw:['salud sexual','sexual','mujer','planificacion familiar']},
+  {icon:'cpu',           kw:['biomedic','equipo','mantenimiento','tecnologia','sistemas','informatica']},
+  {icon:'hardHat',       kw:['ingenier','obra','construccion','remodelacion','arquitect']},
+  {icon:'headset',       kw:['atencion al','pqrs','servicio al']},
+  {icon:'stethoscope',   kw:['enfermer','auxiliar','medico','medica','doctor','consulta']},
+  {icon:'store',         kw:['mercado','bazar','tienda','pulgas']},
+  {icon:'handshake',     kw:['trabajador social','trabajo social','voluntari','alianza','convenio']},
+  {icon:'sparkles',      kw:['limpieza','aseo','servicios generales']},
+  {icon:'gift',          kw:['celebracion','conmemorativo','feria','fiesta','festiv']},
+  {icon:'flag',          kw:['marcha']},
+  {icon:'megaphone',     kw:['campana','comunicado','divulgacion','promocion']},
+  {icon:'receipt',       kw:['facturacion','glosa','cartera']},
+  {icon:'siren',         kw:['simulacro','emergencia','desastre','evacuacion','accidente','alarma']},
+  {icon:'ear',           kw:['tamizaje']},
+  {icon:'calendar',      kw:['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','setiembre','octubre','noviembre','diciembre','semestre','trimestre','cronograma','agenda']},
 ];
-/* Devuelve {icon, cls} para una tarjeta de carpeta: si matchea un ICON_RULE, usa su ícono y su
-   propio color (.icon-<nombre>, ver css/styles.css); si no, cae al ícono + color de respaldo
-   por palabra clave (.cat-<id>, ver FOLDER_STYLES); si tampoco matchea, tarjeta neutra sin clase. */
+
+/* Respaldo B para carpetas que no coinciden con NINGUNA regla ni categoría: en vez de dejar el
+   ícono genérico de carpeta, se les asigna un ícono neutro + un color de la paleta --cat-*
+   derivados de un hash del nombre (FNV-1a). Es la misma idea de los "identicons"/hash
+   visualization (Perrig & Song, 1999): determinista — la misma carpeta siempre se ve igual, sin
+   importar el orden o el usuario — y variada entre carpetas distintas. El color se limita a la
+   paleta de 8 tonos ya existente porque la discriminación de color por sí sola se degrada pasadas
+   ~7 categorías (Healey, 1996); la forma del ícono es la que aporta la variedad. */
+var AUTO_ICONS=['images','layers','bookmark','tag','shapes'];
+function hashText(s){
+  var h=2166136261;
+  for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+  return h>>>0;
+}
+function autoFolderStyle(text){
+  var h=hashText(text);
+  return {icon:ICONS[AUTO_ICONS[h%AUTO_ICONS.length]], cls:'cat-'+FOLDER_STYLES[(h>>>8)%FOLDER_STYLES.length].id};
+}
+
+/* Devuelve {icon, cls} para una tarjeta de carpeta, en este orden de prioridad:
+   1) nombre sin letras (solo fechas/números, ej. "2022/05/11") → calendario;
+   2) ICON_RULES (ícono propio, clase .icon-<nombre>);
+   3) categoría por palabra clave CAT_KW (ícono + color de FOLDER_STYLES, clase .cat-<id>);
+   4) autoFolderStyle (hash del nombre). Resultado memorizado por nombre: se llama en cada render. */
+var folderStyleCache={};
 function styleForFolder(name){
-  var text=normalizeText(name);
-  for(var i=0;i<ICON_RULES.length;i++){
-    var rule=ICON_RULES[i];
-    if(rule.kw.some(function(k){return text.indexOf(normalizeText(k))>-1;})){
-      return {icon:ICONS[rule.icon], cls:'icon-'+rule.icon};
-    }
+  if(folderStyleCache.hasOwnProperty(name)) return folderStyleCache[name];
+  var text=normalizeText(name), words=text?text.split(' '):[], res=null;
+  if(text && !/[a-z]/.test(text)) res={icon:ICONS.calendar, cls:'icon-calendar'};
+  for(var i=0;!res&&i<ICON_RULES.length;i++){
+    if(anyKw(text,words,ICON_RULES[i].kw)) res={icon:ICONS[ICON_RULES[i].icon], cls:'icon-'+ICON_RULES[i].icon};
   }
-  var styleId=catForFolderName(name);
-  var styleObj=styleId&&FOLDER_STYLES.find(function(c){return c.id===styleId;});
-  return {icon:styleObj?styleObj.icon:ICONS.folderOpen, cls:styleId?'cat-'+styleId:''};
+  if(!res){
+    var styleId=catForText(text,words);
+    var styleObj=styleId&&FOLDER_STYLES.find(function(c){return c.id===styleId;});
+    res=styleObj ? {icon:styleObj.icon, cls:'cat-'+styleId} : autoFolderStyle(text);
+  }
+  return (folderStyleCache[name]=res);
 }
 
 function buildSidebar(){
@@ -306,6 +432,39 @@ function matchesFilters(f, q){
   return matchType&&matchQ&&matchTag;
 }
 
+/* Lista de carpetas: columnas redimensionables como en el Explorador de Windows (arrastrar el borde
+   del encabezado; doble clic lo devuelve al ancho original). Anchos en px CSS guardados en localStorage. */
+var LIST_COLS_KEY='bancoColsLista', LIST_COLS_DEF={cw1:420,cw2:150,cw3:200}, LIST_COLS_MIN={cw1:140,cw2:80,cw3:80};
+var listCols=(function(){ var c=Object.assign({},LIST_COLS_DEF); try{ var s=JSON.parse(localStorage.getItem(LIST_COLS_KEY)||'null'); if(s) ['cw1','cw2','cw3'].forEach(function(k){ if(typeof s[k]==='number'&&s[k]>=LIST_COLS_MIN[k]&&s[k]<4000) c[k]=s[k]; }); }catch(e){} return c; })();
+function applyListCols(){
+  var g=document.querySelector('#folderList .folder-grid.lv'); if(!g) return;
+  ['cw1','cw2','cw3'].forEach(function(k){ g.style.setProperty('--'+k, listCols[k]+'px'); });
+}
+(function(){
+  var fl=document.getElementById('folderList');
+  fl.addEventListener('dblclick',function(ev){
+    var h=ev.target.closest('.rz'); if(!h) return;
+    var k='cw'+h.getAttribute('data-c'); listCols[k]=LIST_COLS_DEF[k]; applyListCols();
+    try{localStorage.setItem(LIST_COLS_KEY,JSON.stringify(listCols));}catch(e){}
+  });
+  fl.addEventListener('pointerdown',function(ev){
+    var h=ev.target.closest('.rz'); if(!h||ev.button>0) return;
+    ev.preventDefault(); ev.stopPropagation();
+    var k='cw'+h.getAttribute('data-c'), span=h.parentNode;
+    var scale=(span.getBoundingClientRect().width/span.offsetWidth)||1; // px de pantalla por px CSS (el zoom de la app)
+    var x0=ev.clientX, w0=listCols[k];
+    h.classList.add('drag'); document.body.classList.add('col-resizing');
+    try{h.setPointerCapture(ev.pointerId);}catch(e){}
+    function mv(e){ listCols[k]=Math.max(LIST_COLS_MIN[k],Math.min(3000,Math.round(w0+(e.clientX-x0)/scale))); applyListCols(); }
+    function up(){
+      h.removeEventListener('pointermove',mv); h.removeEventListener('pointerup',up); h.removeEventListener('pointercancel',up);
+      h.classList.remove('drag'); document.body.classList.remove('col-resizing');
+      try{localStorage.setItem(LIST_COLS_KEY,JSON.stringify(listCols));}catch(e){}
+    }
+    h.addEventListener('pointermove',mv); h.addEventListener('pointerup',up); h.addEventListener('pointercancel',up);
+  });
+})();
+
 function filterImages(){
   /* La grilla se reconstruye entera (loadMoreCards) — una selección de otra carpeta/búsqueda
      dejaría de tener tarjetas visibles que la reflejen, así que se limpia acá. */
@@ -347,8 +506,9 @@ function filterImages(){
         '<span class="folder-card-meta">'+formatDate(fo.modifiedTime)+'</span>'+
       '</div>';
     }).join('');
-    var head=isFolderLi?'<div class="folder-list-head"><span>Nombre</span><span>Modificado</span><span>Propietario</span></div>':'';
+    var head=isFolderLi?'<div class="folder-list-head"><span>Nombre<i class="rz" data-c="1"></i></span><span>Modificado<i class="rz" data-c="2"></i></span><span>Propietario<i class="rz" data-c="3"></i></span></div>':'';
     folderList.innerHTML='<div class="folder-grid'+(isFolderLi?' lv':'')+'">'+head+rows+'</div>';
+    if(isFolderLi) applyListCols();
   }
 
   if(!filteredAll.length){
@@ -358,6 +518,61 @@ function filterImages(){
     return;
   }
   loadMoreCards();
+}
+
+/* En resultados de búsqueda (que mezclan todo el banco) cada tarjeta indica su carpeta. f.path ya
+   viaja en la respuesta de la Edge Function (nombres de carpetas desde la raíz hasta la que
+   contiene la imagen), así que no cuesta ninguna consulta extra. En la tarjeta se muestran solo
+   los últimos 2 niveles; la ruta completa queda en el tooltip. */
+function folderLabel(f){
+  var p=f.path||[];
+  var full=p.length?p.join(' / '):'Carpeta principal';
+  var short=p.length>2?'… / '+p.slice(-2).join(' / '):full;
+  var icon='<svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>';
+  /* Con folderId (Edge Function actualizada) la etiqueta es un enlace a esa carpeta; sin él
+     (backend viejo) queda como texto informativo. */
+  if(f.folderId) return '<button type="button" class="img-folder link" title="Ir a la carpeta: '+escHtml(full)+'" onclick="goToFolderOf(event,\''+escHtml(f.folderId)+'\')">'+icon+'<span>'+escHtml(short)+'</span></button>';
+  return '<div class="img-folder" title="'+escHtml(full)+'">'+icon+'<span>'+escHtml(short)+'</span></div>';
+}
+
+/* Salta desde un resultado de búsqueda a la carpeta que contiene la imagen. Entrada nueva en el
+   historial: Atrás vuelve a los resultados. */
+async function goToFolderOf(ev, fid){
+  ev.stopPropagation();
+  clearTimeout(searchDebounceTimer);
+  document.getElementById('searchInput').value=''; activeTag=null;
+  searchMode=false; updateSearchClear();
+  showLoader('Abriendo carpeta...');
+  try{
+    var chain=await resolveBreadcrumbForFolder(fid);
+    breadcrumb=chain||[{id:CONFIG.FOLDER_ID,name:'Banco de Imágenes'}];
+  }catch(e){
+    if(e.code===401){ if(supabase) supabase.auth.signOut(); window.location.replace('login.html?expired=1'); return; }
+    breadcrumb=[{id:CONFIG.FOLDER_ID,name:'Banco de Imágenes'}];
+  }
+  openFolder(breadcrumb[breadcrumb.length-1].id, true);
+}
+
+/* Indicador de carga con los puntos de colores del splash (ver .splash-dots), para que cada
+   clic en una carpeta / Atrás muestre respuesta inmediata aunque Drive tarde un poco. */
+function loaderHtml(msg){
+  return '<div class="loader" role="status" aria-live="polite"><div class="splash-dots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><p>'+msg+'</p></div>';
+}
+function showLoader(msg){
+  var grid=document.getElementById('imageGrid');
+  /* Se vacía TODO el contenido anterior (tarjetas de carpetas y estadísticas), no solo la grilla
+     de imágenes: si no, las carpetas viejas quedaban en pantalla y el indicador, más abajo,
+     fuera de la vista — parecía que el clic no había hecho nada. */
+  document.getElementById('folderList').innerHTML='';
+  document.getElementById('statsBar').style.display='none';
+  /* Se descarta también la lista ya filtrada: al achicarse la grilla a solo el loader, el sentinel de
+     scroll infinito entra en pantalla y handleScrollBottom() seguía pintando las tarjetas de la
+     carpeta anterior (de a 60) debajo del "Cargando…". */
+  filteredAll=[]; visibleCount=0;
+  grid.className='grid';
+  grid.innerHTML=loaderHtml(msg);
+  var nb=document.getElementById('navBand');
+  if(nb&&nb.getBoundingClientRect().top<0) nb.scrollIntoView({block:'start'});
 }
 
 function loadMoreCards(){
@@ -385,6 +600,7 @@ function loadMoreCards(){
       '</div>'+
       '<div class="img-info">'+
         '<div class="img-name">'+escHtml(f.name)+'</div>'+
+        (searchMode?folderLabel(f):'')+
         '<div class="img-meta">'+
           '<span class="img-date">'+formatDate(f.modifiedTime)+'</span>'+
           tagPills+
@@ -518,7 +734,7 @@ function handleScrollBottom(){
   if(searchMode) growSearchResults();
 }
 
-function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
 function formatDate(d){
   if(!d) return '—';
@@ -773,15 +989,38 @@ function handleDescInput(){
    para reintentar. El botón ya no puede dispararse sin descripción (ver
    updateGenTagsBtnVisibility, que lo oculta si el campo está vacío), así que acá ya no hace
    falta ese chequeo. */
+/* Cada generación toma un número; cerrar el modal o abrir otra imagen (cancelTagGeneration) lo
+   invalida, y la respuesta tardía de Gemini se descarta en vez de pintarse sobre otra imagen. La
+   petición a Gemini no se puede abortar en el servidor, solo se ignora su resultado. */
+var genSeq=0;
+var genBusy=false;
+function setGenLock(on){
+  genBusy=on;
+  var dm=document.getElementById('detailModal'); if(dm) dm.classList.toggle('gen-busy',on);
+  ['mGenTagsBtn','mDescInput','mSaveBtn'].forEach(function(id){ var el=document.getElementById(id); if(el) el.disabled=on; });
+}
+function cancelTagGeneration(){
+  genSeq++; setGenLock(false);
+  var st=document.getElementById('mGenTagsStatus');
+  if(st){ st.className='m-desc-status'; st.textContent=''; }
+}
 async function generateTagSuggestions(){
   if(!isAdmin) return;
   var desc=(modalDraft.description||'').trim();
   if(!desc) return;
+  // file/draft: se capturan ahora porque el modal se reutiliza para todas las imágenes — si el
+  // usuario cierra este modal y abre otra imagen antes de que responda Gemini, la respuesta
+  // tardía no debe pisar el borrador de la imagen nueva (mismo criterio que saveModalChanges).
+  var file=currentFile;
+  var draft=modalDraft;
   // Estado propio (mGenTagsStatus), separado del de "Guardar cambios" (mDescStatus) — antes
   // compartían el mismo texto en el footer y un mensaje pisaba al otro.
   var status=document.getElementById('mGenTagsStatus');
   var btn=document.getElementById('mGenTagsBtn');
-  btn.disabled=true;
+  // Mientras Gemini responde se bloquean también la descripción y "Guardar cambios": si se editara
+  // o guardara en ese lapso, las etiquetas sugeridas ya no corresponderían al texto guardado.
+  var mySeq=++genSeq;
+  setGenLock(true);
   status.className='m-desc-status';
   status.textContent='Generando etiquetas...';
   try{
@@ -792,16 +1031,18 @@ async function generateTagSuggestions(){
     });
     var data=await res.json();
     if(!res.ok) throw new Error(data.error||'No se pudo generar etiquetas.');
-    modalDraft.aiTags=data.tags||[];
+    if(mySeq!==genSeq) return;
+    draft.aiTags=data.tags||[];
     renderTagSuggestions();
     status.className='m-desc-status';
-    status.textContent=modalDraft.aiTags.length?'Etiquetas generadas correctamente.':'No se encontraron etiquetas nuevas para sugerir';
+    status.textContent=draft.aiTags.length?'Etiquetas generadas correctamente.':'No se encontraron etiquetas nuevas para sugerir';
     btn.style.display='none';
   }catch(e){
+    if(mySeq!==genSeq) return;
     status.className='m-desc-status err';
     status.textContent=e.message;
   }finally{
-    btn.disabled=false;
+    if(mySeq===genSeq) setGenLock(false);
   }
 }
 
@@ -851,6 +1092,7 @@ function removeDraftTag(tag){
 }
 
 async function openModal(id){
+  cancelTagGeneration();
   currentFile=allFiles.find(function(f){return f.id===id;});
   if(!currentFile) return;
   var wrap=document.getElementById('modalImgInner');
@@ -889,7 +1131,13 @@ async function openModal(id){
   }
 }
 
-function closeModal(){document.getElementById('detailModal').classList.remove('open');}
+/* Mientras Gemini genera etiquetas no se puede cerrar el modal (✕, Escape ni clic fuera): la petición
+   ya está en curso y cerrar desperdiciaría su costo. Se desbloquea sola al terminar. */
+function closeModal(){
+  if(genBusy) return;
+  cancelTagGeneration();
+  document.getElementById('detailModal').classList.remove('open');
+}
 function closeModalBg(e){if(e.target.id==='detailModal') closeModal();}
 
 /* Guarda descripción + etiquetas del borrador en un solo PATCH a la Edge Function catalogo.
@@ -942,12 +1190,66 @@ function downloadFile(){
   var url=currentFile.webContentLink||'https://drive.google.com/uc?export=download&id='+currentFile.id;
   window.open(url,'_blank');
 }
+/* Modos de vista tipo explorador: iconos pequeños/medianos/grandes (s|m|xl) o lista (l).
+   viewMode sigue siendo 'g' (cuadrícula) o 'l' (lista); el tamaño vive en una clase del body
+   (sz-s/sz-m/sz-xl) que css/styles.css traduce a --tile-min, escalada con el ancho de la
+   ventana para que en pantallas ultra anchas no queden miniaturas diminutas. Se recuerda
+   en localStorage. */
+var VIEW_KEY='bancoVista';
+function applyView(v){
+  if(['xxl','xl','m','s','l'].indexOf(v)<0) v='m';
+  viewMode=v==='l'?'l':'g';
+  document.body.classList.remove('sz-s','sz-m','sz-xl','sz-xxl');
+  if(v!=='l') document.body.classList.add('sz-'+v);
+  document.querySelectorAll('#viewPop .vitem[data-v]').forEach(function(el){
+    var on=el.getAttribute('data-v')===v;
+    el.setAttribute('aria-checked',on?'true':'false');
+    el.classList.toggle('active',on);
+  });
+}
+function toggleViewMenu(ev,force){
+  if(ev) ev.stopPropagation();
+  var pop=document.getElementById('viewPop'), btn=document.getElementById('viewBtn');
+  var open=force!==undefined?force:pop.style.display==='none';
+  pop.style.display=open?'block':'none';
+  btn.setAttribute('aria-expanded',open?'true':'false');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#viewMenu')) toggleViewMenu(null,false);
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') toggleViewMenu(null,false);
+});
 function setView(v){
-  viewMode=v;
-  document.getElementById('btnG').className='vbtn'+(v==='g'?' active':'');
-  document.getElementById('btnL').className='vbtn'+(v==='l'?' active':'');
+  applyView(v);
+  try{ localStorage.setItem(VIEW_KEY,v); }catch(e){}
+  toggleViewMenu(null,false);
   filterImages();
 }
+/* Escala proporcional a la pantalla: TODA la interfaz (cabecera, buscador, barra lateral,
+   botones, tarjetas, login) se agranda con CSS zoom según el tamaño de la ventana respecto a
+   una pantalla de referencia de 1440x810 — el mismo % de pantalla en cualquier monitor, así
+   nada se ve pequeño en pantallas grandes. Nunca achica (mínimo 100%), tope 250%; en móvil
+   (<=600px) no aplica. Se recalcula al redimensionar. login.html usa la misma fórmula. */
+function applyAutoFit(){
+  var z=1;
+  if(window.innerWidth>600){
+    z=Math.min(window.innerWidth/1440,window.innerHeight/810);
+    z=Math.round(Math.max(1,Math.min(z,2.5))*20)/20;
+  }
+  document.documentElement.style.zoom=z===1?'':String(z);
+  document.documentElement.style.setProperty('--ui-zoom',String(z));
+}
+(function(){
+  applyAutoFit();
+  var t=null;
+  window.addEventListener('resize',function(){ clearTimeout(t); t=setTimeout(applyAutoFit,120); });
+})();
+(function(){
+  var v='m';
+  try{ v=localStorage.getItem(VIEW_KEY)||'m'; }catch(e){}
+  applyView(v);
+})();
 
 /* ── SESIÓN DE LA APP (Supabase Auth, login.html) ────
    La app entera vive detrás de una sesión de Supabase — si no hay una, se redirige a
@@ -1189,6 +1491,22 @@ async function bootstrapAuth(){
   handleSession(res.data.session);
 }
 
+/* Confirmación antes de cerrar sesión (evita cierres por clic accidental). Escape también cancela. */
+function openLogoutConfirm(){
+  document.getElementById('logoutModal').classList.add('open');
+  document.getElementById('logoutConfirmBtn').focus();
+}
+function closeLogoutConfirm(){
+  document.getElementById('logoutModal').classList.remove('open');
+}
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape') return;
+  /* Cierra solo el modal de más arriba: confirmación de cierre > administrar usuarios > detalle de imagen. */
+  if(document.getElementById('logoutModal').classList.contains('open')) closeLogoutConfirm();
+  else if(document.getElementById('userAdminModal').classList.contains('open')) closeUserAdmin();
+  else if(document.getElementById('detailModal').classList.contains('open')) closeModal();
+});
+
 async function signOut(){
   // OJO: no se llama a google.accounts.oauth2.revoke() aquí a propósito — revocaría el grant
   // completo en Google (incluido el refresh_token guardado en drive_grants), obligando a
@@ -1202,7 +1520,7 @@ async function signOut(){
 }
 
 function unlockApp(){
-  document.getElementById('appShell').style.display='block';
+  document.getElementById('appShell').style.display='flex';
 }
 
 /* ── TOKEN DE DRIVE (Google, anclado por usuario) ────
@@ -1294,6 +1612,10 @@ function ensureDriveToken(){
    (y su perfil en la tabla profiles). Ver supabase/functions/catalogo/index.ts para el
    contrato exacto. openModal() sigue yendo directo a Drive con un token de Google aparte
    (ver ensureDriveToken) — eso no cambia. */
+/* Cada navegación (abrir carpeta o lanzar una búsqueda) toma un número nuevo; las respuestas
+   que llegan tarde de una navegación anterior se descartan en vez de pintar tarjetas viejas
+   encima de la vista actual (p. ej. al volver a Inicio quedaban imágenes de una búsqueda). */
+var navToken=0;
 async function fetchCatalogo(params){
   var url=CONFIG.SUPABASE_FUNCTION_URL+'?'+params;
   var res=await fetch(url,{headers:{Authorization:'Bearer '+supabaseToken}});
@@ -1314,6 +1636,7 @@ function toFileEntry(f){
    (una sola llamada a la Edge Function), no se recorre todo el árbol por adelantado. */
 async function openFolder(fid, pushHistory){
   searchMode=false;
+  var myTok=++navToken;
   /* activeTag es un filtro de la búsqueda global (ver runSearch) — si sigue activo al entrar a
      una carpeta, esa carpeta se muestra ya filtrada por una etiqueta que el usuario nunca pidió
      ahí, y sigue "pegada" al volver más tarde a esa misma carpeta. Cada carpeta debe abrirse sin
@@ -1324,10 +1647,11 @@ async function openFolder(fid, pushHistory){
   var grid=document.getElementById('imageGrid');
   document.getElementById('toolbar').style.display='flex';
   document.getElementById('searchInput').disabled=false;
-  grid.innerHTML='<div class="loader"><div class="spinner"></div><p>Cargando carpeta...</p></div>';
-  buildBreadcrumb();
+  showLoader('Cargando carpeta...');
+  buildBreadcrumb(); updateSearchClear();
   try{
     var data=await fetchCatalogo('folder_id='+encodeURIComponent(fid));
+    if(myTok!==navToken) return;
     currentFolders=(data.folders||[])
       .map(function(f){return {id:f.id,name:f.name,owner:f.owner,modifiedTime:f.modifiedTime};})
       .sort(function(a,b){return a.name.localeCompare(b.name);});
@@ -1335,6 +1659,7 @@ async function openFolder(fid, pushHistory){
     filterImages(); buildStats(); buildSidebar(); buildTags();
     document.getElementById('alertBox').innerHTML='';
   } catch(e){
+    if(myTok!==navToken) return;
     handleDriveError(e, grid);
   }
 }
@@ -1345,15 +1670,29 @@ function enterFolder(fid){
   openFolder(fid, true);
 }
 
+/* Banda de navegación: ← Atrás / → Adelante (historial real, como el navegador) + ruta de
+   carpetas (jerarquía) con Inicio. Son dos cosas distintas a propósito: las flechas vuelven a
+   donde estabas (incluida una búsqueda), la ruta salta a una carpeta ancestro. En pantallas
+   angostas los tramos intermedios se abrevian a "…" (clases .mid / .ell en styles.css). */
+var NAV_HOME_ICON='<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>';
+function navBack(){ if(navPos>0) history.back(); }
+function navForward(){ if(navPos<navMax) history.forward(); }
 function buildBreadcrumb(){
   var bar=document.getElementById('breadcrumbBar');
-  var backBtn=breadcrumb.length>1?
-    '<span class="back-btn" onclick="goToBreadcrumb('+(breadcrumb.length-2)+')"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg> Atrás</span>':'';
-  bar.innerHTML=backBtn+breadcrumb.map(function(b,i){
-    var isLast=i===breadcrumb.length-1;
-    return (i>0?'<span class="sep">/</span>':'')+
-      '<span class="crumb'+(isLast?' current':'')+'"'+(isLast?'':' onclick="goToBreadcrumb('+i+')"')+'>'+escHtml(b.name)+'</span>';
-  }).join('');
+  var n=breadcrumb.length;
+  var sm=searchMode, total=n+(sm?1:0);
+  bar.innerHTML=breadcrumb.map(function(b,i){
+    var isLast=!sm&&i===n-1;
+    var mid=(i>0&&!isLast)?' mid':'';
+    var label=i===0?NAV_HOME_ICON+'<span>Inicio</span>':escHtml(b.name);
+    var out=(i>0?'<span class="sep'+mid+'">/</span>':'')+
+      '<span class="crumb'+(isLast?' current':'')+mid+'"'+(isLast?' aria-current="page"':' onclick="goToBreadcrumb('+i+')"')+'>'+label+'</span>';
+    if(i===0&&total>2) out+='<span class="sep ell">/</span><span class="crumb ell" title="Carpetas intermedias">…</span>';
+    return out;
+  }).join('')+(sm?'<span class="sep">/</span><span class="crumb current" aria-current="page">Resultados de «'+escHtml(searchQuery)+'» en todo el banco</span>':'');
+  document.getElementById('navBack').disabled=navPos<=0;
+  document.getElementById('navFwd').disabled=navPos>=navMax;
+  document.getElementById('navBand').style.display='flex';
 }
 
 /* URL compartible: refleja la carpeta actual en ?folder= para poder copiar el enlace y para
@@ -1366,8 +1705,9 @@ function syncUrl(fid, pushHistory){
   var url=new URL(location.href);
   if(fid && fid!==CONFIG.FOLDER_ID) url.searchParams.set('folder', fid);
   else url.searchParams.delete('folder');
-  if(pushHistory) history.pushState(null, '', url.toString());
-  else history.replaceState(null, '', url.toString());
+  url.searchParams.delete('q'); url.searchParams.delete('tag');
+  if(pushHistory){ navPos++; navMax=navPos; history.pushState({n:navPos}, '', url.toString()); }
+  else history.replaceState({n:navPos}, '', url.toString());
 }
 
 /* Reacciona al botón Atrás/Adelante del navegador restaurando la carpeta que corresponde a la
@@ -1375,16 +1715,30 @@ function syncUrl(fid, pushHistory){
    lo que pasaba antes: solo se usaba replaceState, así que no había entradas de historial propias
    de la app y Atrás caía directo a la página previa a haberla abierto). */
 window.addEventListener('popstate', function(){
+  navPos=(history.state&&typeof history.state.n==='number')?history.state.n:0;
   if(!authInitialized) return;
-  document.getElementById('searchInput').value='';
+  var sp=new URLSearchParams(location.search);
+  document.getElementById('searchInput').value=sp.get('q')||'';
+  activeTag=sp.get('tag')||null;
+  updateSearchClear();
   handlePopState();
 });
+
+/* Tras resolver la carpeta de la URL: si la entrada de historial era una búsqueda (?q= / ?tag=),
+   se vuelve a ejecutar sin crear otra entrada; si no, se abre la carpeta normal. */
+async function openFolderOrSearch(target){
+  if(document.getElementById('searchInput').value.trim()||activeTag){
+    folderId=target; buildBreadcrumb();
+    document.getElementById('toolbar').style.display='flex';
+    await runSearch(true);
+  } else await openFolder(target);
+}
 
 async function handlePopState(){
   var target=new URLSearchParams(location.search).get('folder')||CONFIG.FOLDER_ID;
   if(target===CONFIG.FOLDER_ID){
     breadcrumb=[{id:CONFIG.FOLDER_ID,name:'Banco de Imágenes'}];
-    await openFolder(target);
+    await openFolderOrSearch(target);
     return;
   }
   try{
@@ -1398,12 +1752,13 @@ async function handlePopState(){
     }
     breadcrumb=[{id:CONFIG.FOLDER_ID,name:'Banco de Imágenes'}];
   }
-  await openFolder(target);
+  await openFolderOrSearch(target);
 }
 
 function goToBreadcrumb(idx){
   breadcrumb=breadcrumb.slice(0, idx+1);
   document.getElementById('searchInput').value='';
+  updateSearchClear();
   openFolder(breadcrumb[idx].id, true);
 }
 
@@ -1426,16 +1781,51 @@ function handleDriveError(e, grid){
 var searchQuery='', searchOffset=0, searchTotal=0, searchFetching=false;
 
 function scheduleSearch(){
+  updateSearchClear();
   clearTimeout(searchDebounceTimer);
-  searchDebounceTimer=setTimeout(runSearch, 500);
+  searchDebounceTimer=setTimeout(function(){runSearch();}, 500);
 }
 
-async function fetchSearchPage(){
+function updateSearchClear(){
+  var has=!!document.getElementById('searchInput').value||searchMode;
+  document.getElementById('searchClear').style.display=has?'flex':'none';
+}
+
+/* Una búsqueda es una entrada propia del historial (state.s): la primera búsqueda hace push,
+   las siguientes teclas solo reemplazan ?q=. Así Atrás / ✕ / Esc salen de la búsqueda y vuelven
+   exactamente a la carpeta donde estabas (antes solo se podía borrando el texto). */
+function syncSearchUrl(q){
+  var url=new URL(location.href);
+  if(q) url.searchParams.set('q', q); else url.searchParams.delete('q');
+  if(activeTag) url.searchParams.set('tag', activeTag); else url.searchParams.delete('tag');
+  if(history.state&&history.state.s) history.replaceState({n:navPos,s:1}, '', url.toString());
+  else { navPos++; navMax=navPos; history.pushState({n:navPos,s:1}, '', url.toString()); }
+}
+
+/* Salir de la búsqueda: si la entrada actual la creamos nosotros, Atrás real (restaura carpeta
+   y deja el Adelante disponible); si no, se reabre la carpeta actual. */
+function clearSearch(focus){
+  clearTimeout(searchDebounceTimer);
+  var inp=document.getElementById('searchInput');
+  inp.value=''; activeTag=null;
+  if(history.state&&history.state.s) history.back();
+  else if(searchMode) openFolder(breadcrumb[breadcrumb.length-1].id);
+  updateSearchClear();
+  if(focus) inp.focus();
+}
+
+document.getElementById('searchInput').addEventListener('keydown', function(e){
+  if(e.key==='Escape'&&(this.value||searchMode)){ e.preventDefault(); clearSearch(); }
+});
+
+async function fetchSearchPage(tok){
   var data=await fetchCatalogo('q='+encodeURIComponent(searchQuery)+'&offset='+searchOffset+'&limit='+PAGE_SIZE);
+  if(tok!==navToken) return false;
   var newFiles=(data.files||[]).map(function(f){return toFileEntry(f);});
   allFiles=allFiles.concat(newFiles);
   searchOffset+=newFiles.length;
   searchTotal=data.total||0;
+  return true;
 }
 
 /* Una píldora de etiqueta activa cuenta como criterio de búsqueda global igual que el texto:
@@ -1445,14 +1835,16 @@ function pillFiltersActive(){
   return !!activeTag;
 }
 
-async function runSearch(){
+async function runSearch(fromHistory){
   var q=document.getElementById('searchInput').value.trim();
   if(!q && !pillFiltersActive()){
-    if(searchMode) openFolder(breadcrumb[breadcrumb.length-1].id);
+    if(searchMode) clearSearch();
     else filterImages();
     return;
   }
+  if(fromHistory!==true) syncSearchUrl(q);
   searchMode=true;
+  var myTok=++navToken;
   /* Si no hay texto escrito pero sí una etiqueta activa, esa etiqueta ES el término que se manda
      al servidor (matchea contra tags_text vía ilike en handleSearch) — antes se mandaba q=''
      (ilike '%%', trae los últimos 60 de TODO el banco sin importar la etiqueta) y una imagen
@@ -1460,12 +1852,14 @@ async function runSearch(){
      matchesFilters sigue aplicándose después para descartar coincidencias sueltas del ilike
      (p.ej. la etiqueta apareciendo en una descripción en vez de en tags). */
   searchQuery=q||activeTag||''; searchOffset=0; searchTotal=0; allFiles=[]; currentFolders=[];
+  buildBreadcrumb(); updateSearchClear();
   var grid=document.getElementById('imageGrid');
-  grid.innerHTML='<div class="loader"><div class="spinner"></div><p>Buscando...</p></div>';
+  showLoader('Buscando...');
   try{
     searchFetching=true;
-    await fetchSearchPage();
+    var ok=await fetchSearchPage(myTok);
     searchFetching=false;
+    if(!ok) return;
     filterImages();
     /* El ilike de tags_text es más permisivo que la etiqueta exacta (puede traer coincidencias
        en descripción/ruta que matchTag descarta después), así que la página ordenada por fecha
@@ -1478,13 +1872,15 @@ async function runSearch(){
        o agotar el total que ya reportó el servidor. */
     while(activeTag && filteredAll.length===0 && allFiles.length<searchTotal){
       searchFetching=true;
-      await fetchSearchPage();
+      ok=await fetchSearchPage(myTok);
       searchFetching=false;
+      if(!ok) return;
       filterImages();
     }
     buildStats(); buildSidebar(); buildTags();
   } catch(e){
     searchFetching=false;
+    if(myTok!==navToken) return;
     handleDriveError(e, grid);
   }
 }
@@ -1498,13 +1894,15 @@ async function growSearchResults(){
   searchFetching=true;
   var q=document.getElementById('searchInput').value.toLowerCase();
   var prevLen=allFiles.length;
+  var myTok=navToken;
   try{
-    await fetchSearchPage();
+    var ok=await fetchSearchPage(myTok);
   }catch(e){
     searchFetching=false;
     return; // error de red al paginar: el usuario puede reintentar scrolleando de nuevo
   }
   searchFetching=false;
+  if(!ok||!searchMode) return; // la persona ya salió de la búsqueda: no pintar resultados viejos
   var newMatches=allFiles.slice(prevLen).filter(function(f){return matchesFilters(f,q);});
   if(newMatches.length){ filteredAll=filteredAll.concat(newMatches); loadMoreCards(); }
   buildStats(); buildSidebar();
@@ -1522,7 +1920,18 @@ async function resolveBreadcrumbForFolder(targetId){
   return chain;
 }
 
+/* Oculta el splash de index (si estaba visible); tope de seguridad de 15 s por si la carga se cuelga. */
+function hideSplash(){
+  var sp=document.getElementById('splash');
+  if(sp) sp.classList.remove('show');
+}
+setTimeout(hideSplash,15000);
+
 async function loadFromDrive(){
+  try{ await loadFromDriveInner(); }finally{ hideSplash(); }
+}
+
+async function loadFromDriveInner(){
   var target=new URLSearchParams(location.search).get('folder');
   if(target&&target!==CONFIG.FOLDER_ID){
     try{

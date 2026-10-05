@@ -1,0 +1,27 @@
+{
+  "name": "prueba_banco_imagenes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nfigueroa19/Banco_Imagenes_HSLV.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nfigueroa19/Banco_Imagenes_HSLV/issues"
+  },
+  "homepage": "https://github.com/nfigueroa19/Banco_Imagenes_HSLV#readme",
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0",
+    "lightningcss": "^1.33.0",
+    "sharp": "^0.35.5",
+    "terser": "^5.51.2"
+  }
+}

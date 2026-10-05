@@ -106,6 +106,22 @@ function listChildren_(parentId) {
 
 /* Punto de entrada del trigger de tiempo. */
 function sync() {
+  /* Una sola ejecución a la vez: si otra sigue corriendo, esta se salta. Sin esto, dos
+     ejecuciones solapadas pueden borrarse mutuamente filas (y las descripciones y etiquetas
+     del admin) porque deleteStale_ borra todo lo que no lleve su propia marca de tiempo. */
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) {
+    Logger.log('Sync omitido: ya hay otra ejecución en curso.');
+    return;
+  }
+  try {
+    syncUnlocked_();
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function syncUnlocked_() {
   var syncedAt = new Date().toISOString();
   var root = Drive.Files.get(CONFIG.FOLDER_ID, { fields: 'id,name,owners(displayName),modifiedTime' });
 

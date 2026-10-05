@@ -83,10 +83,27 @@ const TOKEN_CACHE_TTL_MS = 5 * 60 * 1000;
    a login.html encontraría la misma sesión válida y rebotaría de vuelta en bucle). */
 class NoProfileError extends Error {}
 
-async function verifySupabaseUser(token: string): Promise<AuthedUser | null> {
-  const cached = tokenCache.get(token);
+/* Fecha de expiración del propio JWT (ya verificado por auth.getUser): la caché nunca debe
+   sobrevivir al token. Devuelve 0 si no se puede leer, lo que equivale a "no cachear". */
+function jwtExpMs(token: string): number {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    return typeof payload.exp === "number" ? payload.exp * 1000 : 0;
+  } catch {
+    return 0;
+  }
+}
+
+/* `fresh` = saltarse la caché y releer sesión y rol en vivo. Se usa en las acciones de admin
+   (editar, generar etiquetas) para que una degradación o un borrado surtan efecto al instante. */
+async function verifySupabaseUser(token: string, fresh = false): Promise<AuthedUser | null> {
   const now = Date.now();
-  if (cached && cached.exp > now) return cached;
+  if (!fresh) {
+    const cached = tokenCache.get(token);
+    if (cached && cached.exp > now) return cached;
+  } else {
+    tokenCache.delete(token);
+  }
 
   const { data, error } = await supabase.auth.getUser(token);
   if (error || !data.user) return null;
@@ -102,8 +119,12 @@ async function verifySupabaseUser(token: string): Promise<AuthedUser | null> {
     userId: data.user.id,
     email: data.user.email ?? "",
     role: profile.role,
-    exp: now + TOKEN_CACHE_TTL_MS,
+    exp: Math.min(now + TOKEN_CACHE_TTL_MS, jwtExpMs(token)),
   };
+  if (tokenCache.size >= 500) {
+    for (const [k, v] of tokenCache) if (v.exp <= now) tokenCache.delete(k);
+    if (tokenCache.size >= 500) tokenCache.clear();
+  }
   tokenCache.set(token, user);
   return user;
 }
@@ -121,6 +142,7 @@ function mapImage(row: any) {
   return {
     id: row.id,
     name: row.name,
+    folderId: row.folder_id,
     mimeType: row.mime_type,
     thumbnailLink: row.thumbnail_link,
     webViewLink: row.web_view_link,
@@ -142,7 +164,7 @@ async function handleFolder(folderId: string) {
       .order("name"),
     supabase
       .from("drive_images")
-      .select("id,name,mime_type,thumbnail_link,web_view_link,web_content_link,size,modified_time,path,description,tags")
+      .select("id,folder_id,name,mime_type,thumbnail_link,web_view_link,web_content_link,size,modified_time,path,description,tags")
       .eq("folder_id", folderId)
       .order("modified_time", { ascending: false }),
   ]);
@@ -169,7 +191,7 @@ async function handleSearch(q: string, offset: number, limit: number) {
   );
   const { data, error, count } = await supabase
     .from("drive_images")
-    .select("id,name,mime_type,thumbnail_link,web_view_link,web_content_link,size,modified_time,path,description,tags", { count: "exact" })
+    .select("id,folder_id,name,mime_type,thumbnail_link,web_view_link,web_content_link,size,modified_time,path,description,tags", { count: "exact" })
     .or(orParts.join(","))
     .order("modified_time", { ascending: false })
     .range(offset, offset + limit - 1);
@@ -202,7 +224,7 @@ async function handleThumb(imageId: string) {
     headers: {
       ...CORS_HEADERS,
       "Content-Type": upstream.headers.get("Content-Type") || "image/jpeg",
-      "Cache-Control": "public, max-age=3600",
+      "Cache-Control": "private, max-age=3600",
     },
   });
 }
@@ -423,9 +445,13 @@ Deno.serve(async (req: Request) => {
     const token = authHeader.replace(/^Bearer\s+/i, "");
     if (!token) return json({ error: "Falta el token de autorización." }, 401);
 
+    const isAdminAction =
+      req.method === "PATCH" ||
+      (req.method === "POST" && !!new URL(req.url).searchParams.get("suggest_tags"));
+
     let user: AuthedUser | null;
     try {
-      user = await verifySupabaseUser(token);
+      user = await verifySupabaseUser(token, isAdminAction);
     } catch (e) {
       if (e instanceof NoProfileError) {
         return json({ error: "Tu cuenta no tiene acceso al banco de imágenes." }, 403);

@@ -6,13 +6,24 @@
 <title>Iniciar sesión · Banco de Imágenes HSLV</title>
 <link rel="icon" type="image/png" href="Assets/Logo/favicon.png">
 <link rel="stylesheet" href="css/styles.css">
+<script>
+/* Misma escala proporcional a la pantalla que la app (applyAutoFit en js/app.js). */
+(function(){
+  function fit(){
+    var z=1;
+    if(innerWidth>600){ z=Math.min(innerWidth/1440,innerHeight/810); z=Math.round(Math.max(1,Math.min(z,2.5))*20)/20; }
+    document.documentElement.style.zoom=z===1?'':String(z);
+    document.documentElement.style.setProperty('--ui-zoom',String(z));
+  }
+  fit(); addEventListener('resize',fit);
+})();
+</script>
 </head>
 <body class="login-page">
 
 <div class="login-card">
   <img class="login-logo" src="Assets/Logo/hslv-lockup.png" alt="Hospital Susana López de Valencia E.S.E.">
   <div class="login-title">Banco de Imágenes Institucionales</div>
-  <div class="login-sub">Inicia sesión con tu cuenta autorizada para continuar.</div>
 
   <div id="loginAlert"></div>
 
@@ -40,6 +51,17 @@
   <div class="login-footer">¿Problemas para acceder? Contacta al equipo de Comunicaciones del hospital.</div>
 </div>
 
+<!-- Pantalla de carga Imago: se muestra entre iniciar sesión y la app (ver goToApp). -->
+<div class="splash" id="splash" role="status" aria-live="polite" aria-hidden="true">
+  <div class="splash-inner">
+    <img class="splash-logo" src="Assets/Logo/imago-wordmark.webp" alt="Imago" width="320" height="101">
+    <div class="splash-title">Banco de Imágenes <br>Hospital Susana López de Valencia E.S.E.</div>
+    <div class="splash-dots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="splash-credit">Diseñado por Ing. Nicolás Figueroa Maca</div>
+    <span class="sr-only">Cargando…</span>
+  </div>
+</div>
+
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -58,6 +80,16 @@ var form = document.getElementById('loginForm');
 var submitBtn = document.getElementById('submitBtn');
 var pwdInput = document.getElementById('fPassword');
 var pwdToggle = document.getElementById('pwdToggle');
+
+/* Muestra la pantalla de carga de Imago y entra a '/'. Sin temporizador: el splash sigue
+   visible durante la navegación y la propia app (banco_imagenes_hslv.html) mantiene uno igual
+   hasta que termina de cargar. Se usa tras iniciar sesión y si ya había sesión. */
+var splash = document.getElementById('splash');
+function goToApp() {
+  splash.classList.add('show');
+  splash.setAttribute('aria-hidden', 'false');
+  window.location.replace('/');
+}
 
 function showError(msg) {
   alertBox.innerHTML = '<div class="error-box"><span class="ib-icon">' + ICON_ALERT + '</span> ' + msg + '</div>';
@@ -78,7 +110,7 @@ if (new URLSearchParams(location.search).get('expired') === '1') {
 
 // Si ya hay una sesión activa (F5, o volver a abrir la pestaña), pasa directo a la app.
 supabase.auth.getSession().then(function (res) {
-  if (res.data && res.data.session) window.location.replace('banco_imagenes_hslv.html');
+  if (res.data && res.data.session) goToApp();
 });
 
 pwdToggle.addEventListener('click', function () {
@@ -106,7 +138,7 @@ form.addEventListener('submit', async function (e) {
     return;
   }
 
-  window.location.replace('banco_imagenes_hslv.html');
+  goToApp();
 });
 </script>
 

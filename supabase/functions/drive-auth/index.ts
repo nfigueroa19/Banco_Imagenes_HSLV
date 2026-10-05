@@ -23,7 +23,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const GOOGLE_CLIENT_ID = "1020267220447-rebduv63t3qntjruv6lbmh29vhnualsf.apps.googleusercontent.com"; // mismo CLIENT_ID de CONFIG en js/app.js, no es secreto
+const GOOGLE_CLIENT_ID = "780037425031-ae7aolob458curcn41p3acmatva54k4t.apps.googleusercontent.com"; // mismo CLIENT_ID de CONFIG en js/app.js, no es secreto
 const GOOGLE_CLIENT_SECRET = Deno.env.get("GOOGLE_CLIENT_SECRET")!; // secreto — configurar con `supabase secrets set` o desde el dashboard, nunca en el código
 
 const CORS_HEADERS = {
